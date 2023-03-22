@@ -41,6 +41,8 @@ dependencies:
   page_transition: ^2.0.9
   shared_preferences: ^2.0.5
   video_player: null
+  equatable: ^2.0.5
+  flutter_bloc: ^8.1.1
 
 dev_dependencies:
   flutter_test:

@@ -1,4 +1,7 @@
 import 'package:UdemyClone/Screens/HomeScreen.dart';
+import 'package:UdemyClone/Screens/SignInOptions/signInPage.dart';
+import 'package:UdemyClone/Screens/SignInOptions/Login_Screen.dart';
+import 'package:UdemyClone/Screens/SignInOptions/testSignIn.dart';
 import 'package:UdemyClone/Services/PrefStorage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -36,6 +39,6 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.red,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: HomeScreen());
+        home: LoginScreen());
   }
 }

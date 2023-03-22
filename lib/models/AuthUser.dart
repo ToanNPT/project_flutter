@@ -7,7 +7,7 @@ class AuthUser {
 
   factory AuthUser.fromJson(Map<String, dynamic> json) {
     return AuthUser(
-        token: json["token"], username: json["username"], role: json["role"]);
+        token: json["token"], username: json["username"], role: json["roles"]);
   }
 
   Map<String, dynamic> toJson() =>

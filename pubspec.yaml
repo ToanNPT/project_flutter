@@ -43,6 +43,11 @@ dependencies:
   video_player: null
   equatable: ^2.0.5
   flutter_bloc: ^8.1.1
+  simple_animations: ^4.1.0
+  supercharged: ^2.1.1
+  build_runner: ^2.1.11
+  build_web_compilers: ^3.2.3
+  pin_code_fields: ^7.4.0
 
 dev_dependencies:
   flutter_test:

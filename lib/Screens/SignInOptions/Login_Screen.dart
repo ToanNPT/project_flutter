@@ -1,11 +1,9 @@
 import 'package:UdemyClone/Screens/HomeScreen.dart';
-import 'package:UdemyClone/models/AuthUser.dart';
 import 'package:flutter/material.dart';
 
 import '../../Core/Animation/Fade_Animation.dart';
 import '../../Core/Colors/Hex_Color.dart';
 import '../../blocs/LoginBloc.dart';
-import '../../events/AuthenEvent.dart';
 import '../../models/LoginPayload.dart';
 import '../Forgot_Password_Screen.dart';
 import '../SignUp_Screen.dart';
@@ -31,22 +29,22 @@ class _LoginScreenState extends State<LoginScreen> {
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
 
-
   final _loginBloc = LoginBloc();
   final _textEditingController = <String, TextEditingController>{};
 
-  TextEditingController _getTextEditingController(String id){
+  TextEditingController _getTextEditingController(String id) {
     return _textEditingController[id] ??= TextEditingController();
   }
 
   @override
   void dispose() {
     _loginBloc.dispose();
-    _textEditingController.values.forEach((element) {element.dispose();});
+    _textEditingController.values.forEach((element) {
+      element.dispose();
+    });
     super.dispose();
   }
-  
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -229,70 +227,85 @@ class _LoginScreenState extends State<LoginScreen> {
                           height: 20,
                         ),
                         FadeAnimation(
-                          delay: 0,
-                          child: StreamBuilder<bool>(
-                            stream: _loginBloc.isLoading,
-                            builder:  (context, snapshot) {
-                              if(snapshot.data == true){
-                                return CircularProgressIndicator();
-                              }else{
-                                return TextButton(
-                                    onPressed: () async {
-                                      final username = _getTextEditingController("username").text.toString();
-                                      final password = _getTextEditingController("password").text.toString();
+                            delay: 0,
+                            child: StreamBuilder<bool>(
+                              stream: _loginBloc.isLoading,
+                              builder: (context, snapshot) {
+                                if (snapshot.data == true) {
+                                  return CircularProgressIndicator();
+                                } else {
+                                  return TextButton(
+                                      onPressed: () async {
+                                        final username =
+                                            _getTextEditingController(
+                                                    "username")
+                                                .text
+                                                .toString();
+                                        final password =
+                                            _getTextEditingController(
+                                                    "password")
+                                                .text
+                                                .toString();
 
-                                      final res = await _loginBloc.login(new LoginPayload(username, password));
-                                      if(res){
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => HomeScreen(),
-                                          ),
-                                        );
-                                      }else{
-                                        return showDialog(
-                                            context: context,
-                                            builder: (BuildContext context) => AlertDialog(
-                                              title: Text('Login Fail'),
-                                              content: Text('username or password was wrong'),
-                                              actions: <Widget>[
-                                                TextButton(
-                                                  child: Text('CANCEL'),
-                                                  onPressed: () {
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                                TextButton(
-                                                  child: Text('OK'),
-                                                  onPressed: () {
-                                                    // Do something here
-                                                    Navigator.of(context).pop();
-                                                  },
-                                                ),
-                                              ],
-                                            ));
-                                      }
-                                    },
-                                    child: Text(
-                                      "Login",
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        letterSpacing: 0.5,
-                                        fontSize: 16.0,
-                                        fontWeight: FontWeight.bold,
+                                        final res = await _loginBloc.login(
+                                            new LoginPayload(
+                                                username, password));
+                                        if (res) {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  HomeScreen(),
+                                            ),
+                                          );
+                                        } else {
+                                          return showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  AlertDialog(
+                                                    title: Text('Login Fail'),
+                                                    content: Text(
+                                                        'username or password was wrong'),
+                                                    actions: <Widget>[
+                                                      TextButton(
+                                                        child: Text('CANCEL'),
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      ),
+                                                      TextButton(
+                                                        child: Text('OK'),
+                                                        onPressed: () {
+                                                          // Do something here
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ));
+                                        }
+                                      },
+                                      child: Text(
+                                        "Login",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          letterSpacing: 0.5,
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                    ),
-                                    style: TextButton.styleFrom(
-                                        backgroundColor: Color(0xFF2697FF),
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 14.0, horizontal: 80),
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius:
-                                            BorderRadius.circular(12.0))));
-                              }
-                            },
-                          )
-                        ),
+                                      style: TextButton.styleFrom(
+                                          backgroundColor: Color(0xFF2697FF),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 14.0, horizontal: 80),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      12.0))));
+                                }
+                              },
+                            )),
                       ],
                     ),
                   ),

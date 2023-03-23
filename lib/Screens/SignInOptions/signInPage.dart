@@ -2,8 +2,6 @@
 // import 'package:UdemyClone/Screens/SignInOptions/signUpPage.dart';
 // import 'package:UdemyClone/Services/Authentication.dart';
 import 'package:UdemyClone/Screens/SignInOptions/signUpPage.dart';
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';

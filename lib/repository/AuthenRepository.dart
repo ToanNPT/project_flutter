@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'package:UdemyClone/models/LoginPayload.dart';
 import 'package:UdemyClone/models/AuthUser.dart';
 import 'package:http/http.dart';
-
+import 'package:UdemyClone/ultis/ApiEndpoint.dart' as ApiConst;
 class AuthenRepository {
-  String userUrl = 'http://192.168.1.4:8080/api/v1/login';
+  String userUrl = ApiConst.LOGIN_ENDPOINT;
 
   Future<AuthUser> login(LoginPayload payload) async {
     final p = payload.toJson();

@@ -1,15 +1,14 @@
-import 'package:UdemyClone/Screens/HomeScreen.dart';
-import 'package:UdemyClone/Screens/SignInOptions/signInPage.dart';
+import 'package:UdemyClone/Screens/HomeScreens/HomeCourse.dart';
 import 'package:UdemyClone/Screens/SignInOptions/Login_Screen.dart';
-import 'package:UdemyClone/Screens/SignInOptions/testSignIn.dart';
 import 'package:UdemyClone/Services/PrefStorage.dart';
+import 'package:UdemyClone/blocs/CoursesBloc.dart';
+import 'package:UdemyClone/states/CourseState.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
-
-import 'Screens/SplashScreen.dart';
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
@@ -39,6 +38,9 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.red,
           visualDensity: VisualDensity.adaptivePlatformDensity,
         ),
-        home: LoginScreen());
+        home:BlocProvider(
+          create: (context) => CoursesBloc(),
+          child: HomeCourses(),
+        ));
   }
 }

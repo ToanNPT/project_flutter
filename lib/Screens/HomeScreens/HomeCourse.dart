@@ -5,6 +5,7 @@ import 'package:UdemyClone/Screens/HomeScreens/MyList.dart';
 import 'package:UdemyClone/blocs/CoursesBloc.dart';
 import 'package:UdemyClone/states/CourseState.dart';
 import 'package:UdemyClone/widgets/CourseCard.dart';
+import 'package:UdemyClone/Screens/HomeScreens/Search.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

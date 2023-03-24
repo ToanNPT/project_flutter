@@ -19,4 +19,26 @@ class CourseRepository {
       throw Exception(response.reasonPhrase);
     }
   }
+
+  static Future<List<Course>> fetchFilterCourse(String value) async {
+    final url = Uri.parse(ApiConst.SEARCH_ENDPOINT);
+    final headers = {'Content-Type': 'application/json'};
+    final myObjectsList = [
+      {'key': 'name',
+        'value': value,
+        'operation': 'MATCH'
+      },
+    ];
+    final body = jsonEncode(myObjectsList);
+
+    Response response = await post(url, headers: headers, body: body);
+
+    if (response.statusCode == 200) {
+      final List<dynamic> jsonList = jsonDecode(response.body)["data"]["content"];
+      return jsonList.map((data) => Course.fromJson(data)).toList();
+    } else {
+      print("from repository: " + response.reasonPhrase);
+      throw Exception(response.reasonPhrase);
+    }
+  }
 }

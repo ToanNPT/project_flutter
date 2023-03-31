@@ -1,8 +1,12 @@
 import 'package:UdemyClone/Screens/HomeScreen.dart';
+import 'package:UdemyClone/Screens/HomeScreens/HomeCourse.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../Core/Animation/Fade_Animation.dart';
 import '../../Core/Colors/Hex_Color.dart';
+import '../../blocs/CoursesBloc.dart';
+import '../../blocs/GirdCourseBloc.dart';
 import '../../blocs/LoginBloc.dart';
 import '../../models/LoginPayload.dart';
 import '../Forgot_Password_Screen.dart';
@@ -254,8 +258,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                           Navigator.push(
                                             context,
                                             MaterialPageRoute(
-                                              builder: (context) =>
-                                                  HomeScreen(),
+                                              builder: (context) => HomeScreen()
                                             ),
                                           );
                                         } else {

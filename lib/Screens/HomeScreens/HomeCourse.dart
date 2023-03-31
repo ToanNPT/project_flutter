@@ -1,10 +1,12 @@
-import 'package:UdemyClone/Controller/DataController.dart';
 import 'package:UdemyClone/Screens/DetailsScreens/DetailsScreen.dart';
-import 'package:UdemyClone/Screens/HomeScreen.dart';
 import 'package:UdemyClone/Screens/HomeScreens/MyList.dart';
 import 'package:UdemyClone/blocs/CoursesBloc.dart';
+import 'package:UdemyClone/blocs/GirdCourseBloc.dart';
+import 'package:UdemyClone/events/GridCourseEvent.dart';
 import 'package:UdemyClone/states/CourseState.dart';
+import 'package:UdemyClone/states/GirdCourseState.dart';
 import 'package:UdemyClone/widgets/CourseCard.dart';
+import 'package:UdemyClone/widgets/CourseItem.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +15,8 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../events/CoursesEvent.dart';
+import '../../models/Course.dart';
+import 'package:bottom_loader/bottom_loader.dart';
 
 class HomeCourses extends StatefulWidget {
   @override
@@ -21,25 +25,40 @@ class HomeCourses extends StatefulWidget {
 
 class _HomeCoursesState extends State<HomeCourses> {
   final CoursesBloc coursesBloc = new CoursesBloc();
-  Future<Null> _pullData() {
-    Navigator.pushReplacement(
-      context,
-      PageTransition(child: HomeScreen(), type: PageTransitionType.fade),
-    );
-  }
+  final GridCoursesBloc gridCoursesBloc = new GridCoursesBloc();
+  final _scrollController = ScrollController();
+  int page = 0;
+  bool _canLoadMore = true;
+  List<Course> courseItems = [];
+  final _scrollThreshold = 200.0;
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     coursesBloc.add(GetTopNewestCourseEvent());
+    gridCoursesBloc.add(GridCourseInit());
+    _canLoadMore = true;
+    page = 0;
+    _scrollController.addListener(_onScroll);
+  }
+
+  void _onScroll() {
+    final maxScroll = _scrollController.position.maxScrollExtent;
+    final currentScroll = _scrollController.position.pixels;
+    if (maxScroll - currentScroll <= _scrollThreshold) {
+      context
+          .read<GridCoursesBloc>()
+          .add(GetALlCourseAndPaging());
+    }
   }
 
   @override
   void dispose() {
-    // TODO: implement dispose
     coursesBloc.close();
+    gridCoursesBloc.close();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -68,7 +87,10 @@ class _HomeCoursesState extends State<HomeCourses> {
       ),
       backgroundColor: Colors.black,
       body: RefreshIndicator(
-        onRefresh: () => _pullData(),
+        // ignore: missing_return
+        onRefresh: () {
+          context.read<CoursesBloc>().add(GetTopNewestCourseEvent());
+        },
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -77,7 +99,7 @@ class _HomeCoursesState extends State<HomeCourses> {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Container(
-                  height: 220.0,
+                  height: 180.0,
                   width: 400.0,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10.0),
@@ -91,7 +113,7 @@ class _HomeCoursesState extends State<HomeCourses> {
               Padding(
                 padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                 child: Container(
-                  height: 70.0,
+                  height: 60.0,
                   width: 400.0,
                   decoration: new BoxDecoration(
                     gradient: new LinearGradient(
@@ -135,249 +157,85 @@ class _HomeCoursesState extends State<HomeCourses> {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  "Featured",
+                  "Best Seller",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 20.0,
+                    fontWeight: FontWeight.bold
                   ),
                 ),
               ),
               SizedBox(
-                height: 300,
-                width: 400,
-                child: BlocBuilder<CoursesBloc, CourseState>(
-                  builder: (BuildContext context, state){
-                    if(state is CourseInitState){
-                      context.read<CoursesBloc>().add(GetTopNewestCourseEvent());
-                      return CircularProgressIndicator();
+                  height: 300,
+                  width: 400,
+                  child: BlocBuilder<CoursesBloc, CourseState>(
+                      builder: (BuildContext context, state) {
+                    if (state is CourseInitState) {
+                      context
+                          .read<CoursesBloc>()
+                          .add(GetTopNewestCourseEvent());
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
                     }
-                    if(state is CourseLoadingState){
-                      return CircularProgressIndicator();
-                    }else if (state is CourseLoadedState){
+                    if (state is CourseLoadingState) {
+                      return Center(child: CircularProgressIndicator(),);
+                    } else if (state is CourseLoadedState) {
                       return ListView.builder(
                           scrollDirection: Axis.horizontal,
                           itemCount: state.courses.length,
-                          itemBuilder: (BuildContext context, int index){
+                          itemBuilder: (BuildContext context, int index) {
                             return CourseCard(course: state.courses[index]);
-                          }
-                      );
-                    } else{
+                          });
+                    } else {
                       return Center();
                     }
-                  }
-                )
-              ),
+                  })),
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: Text(
-                  "Courses in Web Development",
+                  "Courses in Udemy",
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.0,
-                  ),
+                      color: Colors.white,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
               SizedBox(
-                height: 300,
+                height: MediaQuery.of(context).size.height - 180,
                 width: 400,
-                child: GetBuilder<DataController>(
-                  init: DataController(),
-                  builder: (value) {
-                    return FutureBuilder(
-                      future: value.getData('top'),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
-                          return Center(
-                            child: CircularProgressIndicator(
-                              backgroundColor: Colors.black,
-                            ),
-                          );
-                        } else {
-                          return ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: snapshot.data.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  Get.to(
-                                    DetailsScreen(),
-                                    //transition: .rightToLeftWithFade,
-                                    arguments: snapshot.data[index],
-                                  );
-                                },
-                                child: Container(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(10.0),
-                                          child: FadeInImage(
-                                            height: 120.0,
-                                            width: 200.0,
-                                            fit: BoxFit.fill,
-                                            placeholder: AssetImage(
-                                                "assets/images/udemy_logo_2.jpg"),
-                                            image: NetworkImage(
-                                              snapshot.data[index]
-                                                  .data()['image'],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding:
-                                            const EdgeInsets.only(left: 10.0),
-                                        child: SizedBox(
-                                          width: 200.0,
-                                          child: Text(
-                                            snapshot.data[index]
-                                                .data()['title'],
-                                            overflow: TextOverflow.ellipsis,
-                                            style: TextStyle(
-                                              color: Colors.grey.shade300,
-                                              fontSize: 18.0,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 10.0, top: 5.0),
-                                        child: Text(
-                                          snapshot.data[index].data()['author'],
-                                          style: TextStyle(
-                                            color: Colors.grey.shade500,
-                                            fontSize: 14.0,
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 10.0, top: 5.0),
-                                        child: Row(
-                                          children: [
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.yellow,
-                                              size: 18.0,
-                                            ),
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.yellow,
-                                              size: 18.0,
-                                            ),
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.yellow,
-                                              size: 18.0,
-                                            ),
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.yellow,
-                                              size: 18.0,
-                                            ),
-                                            Icon(
-                                              Icons.star,
-                                              color: Colors.yellow,
-                                              size: 18.0,
-                                            ),
-                                            Text(
-                                              snapshot.data[index]
-                                                  .data()['ratings'],
-                                              style: TextStyle(
-                                                color: Colors.grey.shade500,
-                                                fontSize: 14.0,
-                                              ),
-                                            ),
-                                            Text(
-                                              " (" +
-                                                  snapshot.data[index]
-                                                      .data()['enrolled'] +
-                                                  ")",
-                                              style: TextStyle(
-                                                color: Colors.grey.shade500,
-                                                fontSize: 14.0,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 10.0, top: 5.0),
-                                        child: Row(
-                                          children: [
-                                            Text(
-                                              snapshot.data[index]
-                                                          .data()['discount'] !=
-                                                      ""
-                                                  ? snapshot.data[index]
-                                                      .data()['discount']
-                                                  : snapshot.data[index]
-                                                      .data()['price'],
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 18.0,
-                                              ),
-                                            ),
-                                            SizedBox(
-                                              width: 7.0,
-                                            ),
-                                            Text(
-                                              snapshot.data[index]
-                                                          .data()['discount'] !=
-                                                      ""
-                                                  ? snapshot.data[index]
-                                                      .data()['price']
-                                                  : "",
-                                              style: TextStyle(
-                                                color: Colors.grey,
-                                                fontSize: 15.0,
-                                                decoration:
-                                                    TextDecoration.lineThrough,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                            left: 10.0, top: 10.0),
-                                        child: SizedBox(
-                                          height: 30.0,
-                                          width: 80.0,
-                                          child: Container(
-                                            child: Center(
-                                              child: Text(
-                                                "Best Seller",
-                                                style: TextStyle(
-                                                  color: HexColor('#3d0000'),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Colors.yellow[300],
-                                              borderRadius:
-                                                  BorderRadius.circular(4.0),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                          );
-                        }
-                      },
-                    );
+                child: BlocBuilder<GridCoursesBloc, GridCourseState>(
+                  builder: (BuildContext context, state) {
+                    if (state is GridCourseInitState) {
+                      context
+                          .read<GridCoursesBloc>()
+                          .add(GetALlCourseAndPaging());
+                      return Center(child: CircularProgressIndicator(),);
+                    }
+                    else if (state is GridCourseLoadedState) {
+                     // this._canLoadMore = !state.hasReachedMax;
+                      //if (_canLoadMore) this.page++;
+                      return ListView.builder(
+                        itemCount: state.hasReachedMax
+                            ? state.courses.length
+                            : state.courses.length + 1,
+                        controller: _scrollController,
+                        itemBuilder: (BuildContext context, int index) {
+                          return index > state.courses.length -1
+                              ? Center(child: CircularProgressIndicator(color: Colors.white,),)
+                              : GestureDetector(
+                                  onTap: () {
+                                    Get.to(DetailsScreen(),
+                                        arguments: state.courses[index]);
+                                  },
+                                  child: CourseItem(
+                                      course: state.courses[index]),
+                                );
+                        },
+                      );
+                    }else{
+                      return Center();
+                    }
                   },
                 ),
               ),
@@ -387,6 +245,4 @@ class _HomeCoursesState extends State<HomeCourses> {
       ),
     );
   }
-
-
 }

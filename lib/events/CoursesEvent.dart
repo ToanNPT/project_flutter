@@ -8,3 +8,5 @@ abstract class CourseEvent {}
 class CourseInitEvent extends CourseEvent{}
 
 class  GetTopNewestCourseEvent extends CourseEvent{}
+
+

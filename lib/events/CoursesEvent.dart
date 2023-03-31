@@ -9,4 +9,9 @@ class CourseInitEvent extends CourseEvent{}
 
 class  GetTopNewestCourseEvent extends CourseEvent{}
 
+class SearchCourseEvent extends CourseEvent{
+  final String query;
+  SearchCourseEvent(this.query);
+}
+
 

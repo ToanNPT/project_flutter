@@ -1,229 +1,175 @@
-import 'dart:io';
-
-import 'package:UdemyClone/Controller/DataController.dart';
-import 'package:UdemyClone/Screens/DetailsScreens/detailsScreen.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:eva_icons_flutter/eva_icons_flutter.dart';
+import 'package:UdemyClone/blocs/CoursesBloc.dart';
+import 'package:UdemyClone/states/CourseState.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Search extends StatefulWidget {
-  @override
-  _SearchState createState() => _SearchState();
-}
+import '../../events/CoursesEvent.dart';
 
-class _SearchState extends State<Search> {
-  final TextEditingController searchController = TextEditingController();
-
-  QuerySnapshot snapshot;
-  bool isExecuted = false;
-  bool isLoading = false;
-
+class Search extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    Widget searchedResult() {
-      return ListView.builder(
-        itemCount: snapshot.docs.length,
-        itemBuilder: (BuildContext context, int index) {
-          return GestureDetector(
-            onTap: () {
-              Get.to(DetailsScreen(), arguments: snapshot.docs[index]);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Container(
-                height: 110.0,
-                width: 150.0,
-                decoration: BoxDecoration(
-                  color: Colors.grey[900],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 10.0),
-                  child: Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(5.0),
-                        child: FadeInImage(
-                          height: 90.0,
-                          width: 150.0,
-                          fit: BoxFit.fill,
-                          image: NetworkImage(
-                            snapshot.docs[index].get("image")
-                          ),
-                          placeholder:
-                              AssetImage("assets/images/udemy_logo_2.jpg"),
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 10.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(
-                              width: 220.0,
-                              child: Text(
-                                  snapshot.docs[index].get("title"),
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                  color: Colors.grey.shade300,
-                                  fontSize: 18.0,
-                                ),
-                              ),
-                            ),
-                            Text(
-                                snapshot.docs[index].get("author"),
-                              style: TextStyle(
-                                color: Colors.grey.shade500,
-                                fontSize: 14.0,
-                              ),
-                            ),
-                            Row(
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        title: Text('Search Courses'),
+      ),
+      body: Container(
+        color: Colors.black,
+        child: BlocProvider(
+          create: (context) => CoursesBloc(),
+          child: Column(
+            children: [
+              SearchBar(),
+              Expanded(
+                child: BlocBuilder<CoursesBloc, CourseState>(
+                  builder: (context, state) {
+                    if (state is SearchLoadedState) {
+                      return ListView.builder(
+                        itemCount: state.courses.length,
+                        itemBuilder: (context, index) {
+                          final post = state.courses[index];
+                          return Container(
+                            padding: EdgeInsets.symmetric(vertical: 8.0),
+                            child: Row(
                               children: [
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                  size: 18.0,
-                                ),
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                  size: 18.0,
-                                ),
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                  size: 18.0,
-                                ),
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                  size: 18.0,
-                                ),
-                                Icon(
-                                  Icons.star,
-                                  color: Colors.yellow,
-                                  size: 18.0,
-                                ),
-                                Text(
-                                    snapshot.docs[index].get("ratings"),
-                                  style: TextStyle(
-                                    color: Colors.grey.shade500,
-                                    fontSize: 14.0,
+                                Container(
+                                  width: 100,
+                                  height: 100,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: FadeInImage.assetNetwork(
+                                      placeholder: (
+                                          "assets/images/udemy_logo_2.jpg"),
+                                      image:  post.avatar,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
                                 ),
-                                Text(
-                                  " (" +
-                                      snapshot.docs[index].get("enrolled") +
-                                      ")",
-                                  style: TextStyle(
-                                    color: Colors.grey.shade500,
-                                    fontSize: 14.0,
+                                SizedBox(width: 16),
+                                Expanded(
+                                  child: Container(
+                                    padding: EdgeInsets.all(16),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          post.name,
+                                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,color: Colors.white),
+                                        ),
+                                        SizedBox(height: 8),
+                                        Text(
+                                          post.description,
+                                          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        SizedBox(height: 8),
+                                        Row(
+                                          children: [
+                                            Icon(Icons.star, color: Colors.yellow, size: 16),
+                                            Icon(Icons.star, color: Colors.yellow, size: 16),
+                                            Icon(Icons.star, color: Colors.yellow, size: 16),
+                                            Icon(Icons.star_border, color: Colors.yellow, size: 16),
+                                            Icon(Icons.star_border, color: Colors.yellow, size: 16),
+                                            SizedBox(width: 8),
+                                            Text(
+                                              '4.0',
+                                              style: TextStyle(fontSize: 14,color: Colors.white),
+                                            ),
+                                            SizedBox(width: 8),
+                                            Text(
+                                              post.price.toString(),
+                                              style: TextStyle(fontSize: 14,color: Colors.white),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                          );
+                        },
+                      );
+                    } else if (state is SearchError) {
+                      return Center(
+                        child: Text(state.errorMessage),
+                      );
+                    } else {
+                      return Container();
+                    }
+                  },
                 ),
               ),
-            ),
-          );
-        },
-      );
-    }
-
-    return Scaffold(
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          searchController.text = "";
-          setState(() {
-            isExecuted = false;
-            isLoading = false;
-          });
-          FocusScope.of(context).unfocus();
-        },
-        child: Icon(Icons.search_off_outlined),
-      ),
-      backgroundColor: Colors.black,
-      appBar: AppBar(
-        title: TextField(
-          controller: searchController,
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20.0,
-          ),
-          decoration: InputDecoration(
-            hintText: "Search Courses",
-            hintStyle: TextStyle(
-              color: Colors.grey[700],
-              fontSize: 20.0,
-            ),
+            ],
           ),
         ),
-        backgroundColor: Colors.black,
-        actions: [
-          GetBuilder<DataController>(
-            init: DataController(),
-            builder: (val) {
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Container(
-                  alignment: Alignment.center,
-                  child: InkWell(
-                    child: Icon(EvaIcons.search),
-                    onTap: () {
-                      setState(() {
-                        isLoading = true;
-                      });
-                      val.searchData(searchController.text).then((value) {
-                        snapshot = value;
-                        setState(() {
-                          isExecuted = true;
-                          isLoading = false;
-                        });
-                      });
-                      FocusScope.of(context).unfocus();
-                    },
-                  ),
-                ),
-              );
-            },
-          )
-        ],
-      ),
-      body: isLoading == true
-          ? Center(
-              child: CircularProgressIndicator(backgroundColor: Colors.black),
-            )
-          : isExecuted
-              ? snapshot.docs.length == 0
-                  ? Container(
-                      child: Center(
-                        child: Text(
-                          "No Courses Found",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 25.0,
-                          ),
-                        ),
-                      ),
-                    )
-                  : searchedResult()
-              : Container(
-                  child: Center(
-                    child: Text(
-                      "Search any Courses",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25.0,
-                      ),
-                    ),
-                  ),
-                ),
+      )
     );
   }
 }
+
+class SearchBar extends StatefulWidget {
+  @override
+  _SearchBarState createState() => _SearchBarState();
+}
+
+class _SearchBarState extends State<SearchBar> {
+  final TextEditingController _controller = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: Container(
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.white,
+                    width: 2.0,
+                  ),
+                ),
+              ),
+              child: TextField(
+                controller: _controller,
+                decoration: InputDecoration(
+                  hintText: 'Search',
+                ),
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+
+          ),
+          SizedBox(width: 8.0),
+          ElevatedButton.icon(
+            icon: Icon(
+              Icons.search,
+              size: 32,
+              color: Colors.white,
+            ),
+            label: Text(''),
+            onPressed: () {
+              final query = _controller.text.trim();
+              if (query.isNotEmpty) {
+                BlocProvider.of<CoursesBloc>(context).add(SearchCourseEvent(query));
+              }
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+

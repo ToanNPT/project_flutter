@@ -42,16 +42,19 @@ class CourseRepository {
 
   static Future<List<Course>> fetchFilterCourse(String value) async {
     final url = Uri.parse(ApiConst.SEARCH_ENDPOINT);
-    final headers = {'Content-Type': 'application/json'};
+    final headers = {"Content-Type": "application/json"};
     final myObjectsList = [
-      {'key': 'name',
-        'value': value,
-        'operation': 'MATCH'
+      {"key": "name",
+        "value": value,
+        "operation": "MATCH"
       },
     ];
     final body = jsonEncode(myObjectsList);
 
-    Response response = await post(url, headers: headers, body: body);
+    Response response = await post(
+        url,
+        headers: {"Accept": "application/json;charset=utf-8", "Content-Type": "application/json"},
+        body: body);
 
     if (response.statusCode == 200) {
       final List<dynamic> jsonList = jsonDecode(response.body)["data"]["content"];

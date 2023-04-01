@@ -1,5 +1,4 @@
 import 'package:UdemyClone/Controller/DataController.dart';
-import 'package:UdemyClone/Screens/DetailsScreens/DetailsScreen.dart';
 import 'package:UdemyClone/Screens/HomeScreen.dart';
 import 'package:UdemyClone/Screens/HomeScreens/MyList.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
@@ -7,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:page_transition/page_transition.dart';
+
+import '../DetailsScreens/detailsScreen.dart';
 
 class Featured extends StatefulWidget {
   @override

@@ -1,5 +1,4 @@
 import 'package:UdemyClone/Controller/DataController.dart';
-import 'package:UdemyClone/Screens/DetailsScreens/DetailsScreen.dart';
 import 'package:UdemyClone/Screens/HomeScreen.dart';
 import 'package:UdemyClone/Screens/HomeScreens/MyList.dart';
 import 'package:UdemyClone/blocs/CoursesBloc.dart';
@@ -14,6 +13,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:page_transition/page_transition.dart';
 
 import '../../events/CoursesEvent.dart';
+import '../DetailsScreens/detailsScreen.dart';
 
 class HomeCourses extends StatefulWidget {
   @override

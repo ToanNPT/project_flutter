@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 
-import '../Core/Colors/Hex_Color.dart';
-import '../Screens/DetailsScreens/DetailsScreen.dart';
+import '../Screens/DetailsScreens/detailsScreen.dart';
+import '../core/Colors/Hex_Color.dart';
 import '../models/Course.dart';
 
 class CourseCard extends StatelessWidget{

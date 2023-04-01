@@ -1,8 +1,8 @@
 import 'package:UdemyClone/Screens/HomeScreen.dart';
 import 'package:flutter/material.dart';
 
-import '../../Core/Animation/Fade_Animation.dart';
-import '../../Core/Colors/Hex_Color.dart';
+import '../../core/Animation/Fade_Animation.dart';
+import '../../core/Colors/Hex_Color.dart';
 import '../../blocs/LoginBloc.dart';
 import '../../models/LoginPayload.dart';
 import '../Forgot_Password_Screen.dart';

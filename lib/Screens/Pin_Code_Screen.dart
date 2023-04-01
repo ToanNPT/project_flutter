@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
-import '../../Core/Animation/Fade_Animation.dart';
-import '../../Core/Colors/Hex_Color.dart';
+import '../../core/Animation/Fade_Animation.dart';
+import '../../core/Colors/Hex_Color.dart';
 import 'SignInOptions/Login_Screen.dart';
 
 class PinCodeVerificationScreen extends StatefulWidget {

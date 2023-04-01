@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../Core/Animation/Fade_Animation.dart';
-import '../../Core/Colors/Hex_Color.dart';
+import '../../core/Animation/Fade_Animation.dart';
+import '../../core/Colors/Hex_Color.dart';
 import 'SignInOptions/Login_Screen.dart';
 
 

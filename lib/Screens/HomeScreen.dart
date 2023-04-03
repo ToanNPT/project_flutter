@@ -1,10 +1,15 @@
 import 'package:UdemyClone/Screens/HomeScreens/Account.dart';
 import 'package:UdemyClone/Screens/HomeScreens/Featured.dart';
+import 'package:UdemyClone/Screens/HomeScreens/HomeCourse.dart';
 import 'package:UdemyClone/Screens/HomeScreens/MyCourses.dart';
 import 'package:UdemyClone/Screens/HomeScreens/Search.dart';
 import 'package:UdemyClone/Screens/HomeScreens/WishList.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../blocs/CoursesBloc.dart';
+import '../blocs/GirdCourseBloc.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -39,7 +44,17 @@ class _HomeScreenState extends State<HomeScreen> {
         },
         controller: pageController,
         children: [
-          Featured(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider<CoursesBloc>(
+                create: (BuildContext context) => CoursesBloc(),
+              ),
+              BlocProvider<GridCoursesBloc>(
+                create: (BuildContext context) => GridCoursesBloc(),
+              ),
+            ],
+            child: HomeCourses(),
+          ),
           Search(),
           MyCourses(),
           WishList(),

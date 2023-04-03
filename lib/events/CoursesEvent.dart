@@ -13,3 +13,5 @@ class SearchCourseEvent extends CourseEvent{
   final String query;
   SearchCourseEvent(this.query);
 }
+
+

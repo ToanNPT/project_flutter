@@ -12,6 +12,32 @@ class CourseCard extends StatelessWidget{
 
   CourseCard({this.course});
 
+  List<Widget> _generateStars(double rate){
+    List<Widget> list = new List<Widget>();
+    for(int i = 1; i <= 5; i++){
+      if(i <= rate){
+        list.add(Icon(
+          Icons.star,
+          color: Colors.yellow,
+          size: 18.0,
+        ));
+      } else if(i - rate < 1.0){
+        list.add(Icon(
+          Icons.star_half,
+          color: Colors.yellow,
+          size: 18.0,
+        ));
+      }else if(i > rate){
+        list.add(Icon(
+          Icons.star_border,
+          color: Colors.yellow,
+          size: 18.0,
+        ));
+      }
+    }
+    return list;
+  }
+
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -19,7 +45,7 @@ class CourseCard extends StatelessWidget{
         Get.to(
           DetailsScreen(),
           transition: Transition.rightToLeftWithFade,
-          //arguments: snapshot.data[index],
+          arguments: this.course,
         );
       },
       child: Container(
@@ -75,31 +101,8 @@ class CourseCard extends StatelessWidget{
                   left: 10.0, top: 5.0),
               child: Row(
                 children: [
-                  Icon(
-                    Icons.star,
-                    color: Colors.yellow,
-                    size: 18.0,
-                  ),
-                  Icon(
-                    Icons.star,
-                    color: Colors.yellow,
-                    size: 18.0,
-                  ),
-                  Icon(
-                    Icons.star,
-                    color: Colors.yellow,
-                    size: 18.0,
-                  ),
-                  Icon(
-                    Icons.star,
-                    color: Colors.yellow,
-                    size: 18.0,
-                  ),
-                  Icon(
-                    Icons.star,
-                    color: Colors.yellow,
-                    size: 18.0,
-                  ),
+                  for(Widget i in _generateStars(course.rate)) i,
+
                   Text(
                     course.rate.toString(),
                     style: TextStyle(

@@ -3,9 +3,11 @@ import 'dart:async';
 import 'package:UdemyClone/Services/PrefStorage.dart';
 import 'package:UdemyClone/models/LoginPayload.dart';
 import 'package:UdemyClone/repository/AuthenRepository.dart';
-
+import 'package:UdemyClone/repository/StorageRepository.dart';
+import 'package:UdemyClone/ultis/constants.dart' as Constants;
 class LoginBloc {
   final _authenRepository = AuthenRepository();
+  final StorageRepository storageRepository = new StorageRepository();
 
   final _loadingController = StreamController<bool>.broadcast();
   PrefStorage _prefStorage = PrefStorage();
@@ -20,9 +22,8 @@ class LoginBloc {
       _loadingController.sink.add(true);
       final authUser = await _authenRepository.login(payload);
       if (authUser != null) {
-        _prefStorage.storeAccessToken(authUser.token);
-        _prefStorage.storeUserInfo("username", authUser.username);
-
+        await storageRepository.writeSecureData(Constants.ACCESS_TOKEN_KEY, authUser.token);
+        print("ACCESS TOKEN STORED: " + await storageRepository.readSecureData(Constants.ACCESS_TOKEN_KEY));
         return true;
       }
       return false;

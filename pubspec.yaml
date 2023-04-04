@@ -53,6 +53,8 @@ dependencies:
   shimmer: ^2.0.0
   bottom_loader: ^0.2.2
   readmore: ^2.1.0
+  flutter_secure_storage: ^5.0.2
+
 
 dev_dependencies:
   flutter_test:

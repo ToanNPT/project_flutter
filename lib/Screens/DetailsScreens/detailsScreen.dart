@@ -184,6 +184,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 if (state is CartAddedResult) {
                   Navigator.pop(context);
                   if (state.isSuccess) {
+                    context.read<CartItemsCount>().increase();
                     AwesomeDialog(
                       context: context,
                       dialogType: DialogType.success,

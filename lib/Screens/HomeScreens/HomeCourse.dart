@@ -1,23 +1,25 @@
 import 'package:UdemyClone/Screens/DetailsScreens/DetailsScreen.dart';
 import 'package:UdemyClone/Screens/HomeScreens/MyList.dart';
+import 'package:UdemyClone/blocs/CartBloc.dart';
 import 'package:UdemyClone/blocs/CoursesBloc.dart';
 import 'package:UdemyClone/blocs/GirdCourseBloc.dart';
+import 'package:UdemyClone/blocs/WishListBloc.dart';
 import 'package:UdemyClone/events/GridCourseEvent.dart';
+import 'package:UdemyClone/notficationProvider/CartNotification.dart';
 import 'package:UdemyClone/states/CourseState.dart';
 import 'package:UdemyClone/states/GirdCourseState.dart';
 import 'package:UdemyClone/widgets/CourseCard.dart';
 import 'package:UdemyClone/widgets/CourseItem.dart';
-import 'package:UdemyClone/Screens/HomeScreens/Search.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
 
 import '../../events/CoursesEvent.dart';
 import '../../models/Course.dart';
-import 'package:bottom_loader/bottom_loader.dart';
 
 class HomeCourses extends StatefulWidget {
   @override
@@ -47,9 +49,7 @@ class _HomeCoursesState extends State<HomeCourses> {
     final maxScroll = _scrollController.position.maxScrollExtent;
     final currentScroll = _scrollController.position.pixels;
     if (maxScroll - currentScroll <= _scrollThreshold) {
-      context
-          .read<GridCoursesBloc>()
-          .add(GetALlCourseAndPaging());
+      context.read<GridCoursesBloc>().add(GetALlCourseAndPaging());
     }
   }
 
@@ -64,26 +64,64 @@ class _HomeCoursesState extends State<HomeCourses> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Featured"),
+        title: Text(
+          "Featured",
+          style: TextStyle(color: Colors.white),
+        ),
         backgroundColor: Colors.black,
         actions: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              alignment: Alignment.center,
-              child: InkWell(
-                child: Icon(EvaIcons.shoppingCartOutline),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    PageTransition(
-                        child: MyList(),
-                        type: PageTransitionType.leftToRightWithFade),
+          Stack(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(
+                    top: 8, bottom: 8, right: 32, left: 8),
+                child: Container(
+                  alignment: Alignment.center,
+                  child: InkWell(
+                    child: Icon(EvaIcons.shoppingCartOutline),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        PageTransition(
+                            child: BlocProvider(
+                              create: (BuildContext context) => CartBloc(),
+                              child: MyList(),
+                            ),
+                            type: PageTransitionType.leftToRightWithFade),
+                      );
+                    },
+                  ),
+                ),
+              ),
+              Consumer<CartItemsCount>(
+                builder: (context, mybloc, child) {
+                  return Positioned(
+                    top: 5,
+                    right: 12,
+                    child: mybloc.itemCount != null && mybloc.itemCount > 0
+                        ? Container(
+                            padding: EdgeInsets.all(5),
+                            width: 25,
+                            height: 25,
+                            decoration: BoxDecoration(
+                              color: Colors.green,
+                              borderRadius: BorderRadius.circular(60),
+                            ),
+                            child: Center(
+                              child: Text(
+                                mybloc.itemCount.toString(),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 10,
+                                ),
+                              ),
+                            ))
+                        : Center(),
                   );
                 },
-              ),
-            ),
-          ),
+              )
+            ],
+          )
         ],
       ),
       backgroundColor: Colors.black,
@@ -160,10 +198,9 @@ class _HomeCoursesState extends State<HomeCourses> {
                 child: Text(
                   "Best Seller",
                   style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20.0,
-                    fontWeight: FontWeight.bold
-                  ),
+                      color: Colors.white,
+                      fontSize: 20.0,
+                      fontWeight: FontWeight.bold),
                 ),
               ),
               SizedBox(
@@ -180,7 +217,9 @@ class _HomeCoursesState extends State<HomeCourses> {
                       );
                     }
                     if (state is CourseLoadingState) {
-                      return Center(child: CircularProgressIndicator(),);
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
                     } else if (state is CourseLoadedState) {
                       return ListView.builder(
                           scrollDirection: Axis.horizontal,
@@ -211,10 +250,11 @@ class _HomeCoursesState extends State<HomeCourses> {
                       context
                           .read<GridCoursesBloc>()
                           .add(GetALlCourseAndPaging());
-                      return Center(child: CircularProgressIndicator(),);
-                    }
-                    else if (state is GridCourseLoadedState) {
-                     // this._canLoadMore = !state.hasReachedMax;
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else if (state is GridCourseLoadedState) {
+                      // this._canLoadMore = !state.hasReachedMax;
                       //if (_canLoadMore) this.page++;
                       return ListView.builder(
                         itemCount: state.hasReachedMax
@@ -222,19 +262,39 @@ class _HomeCoursesState extends State<HomeCourses> {
                             : state.courses.length + 1,
                         controller: _scrollController,
                         itemBuilder: (BuildContext context, int index) {
-                          return index > state.courses.length -1
-                              ? Center(child: CircularProgressIndicator(color: Colors.white,),)
+                          return index > state.courses.length - 1
+                              ? Center(
+                                  child: CircularProgressIndicator(
+                                    color: Colors.white,
+                                  ),
+                                )
                               : GestureDetector(
                                   onTap: () {
-                                    Get.to(DetailsScreen(),
+                                    Get.to(
+                                        MultiBlocProvider(
+                                          providers: [
+                                            BlocProvider<WishListBloc>(
+                                              create: (BuildContext context) =>
+                                                  WishListBloc(),
+                                            ),
+                                            BlocProvider<CartBloc>(
+                                              create: (BuildContext context) =>
+                                                  CartBloc(),
+                                            ),
+                                          ],
+                                          child:  ChangeNotifierProvider(
+                                            create: (context) => CartItemsCount(),
+                                            child: DetailsScreen(),
+                                          ),
+                                        ),
                                         arguments: state.courses[index]);
                                   },
-                                  child: CourseItem(
-                                      course: state.courses[index]),
+                                  child:
+                                      CourseItem(course: state.courses[index]),
                                 );
                         },
                       );
-                    }else{
+                    } else {
                       return Center();
                     }
                   },

@@ -1,12 +1,15 @@
 import 'package:UdemyClone/Screens/HomeScreens/Account.dart';
-import 'package:UdemyClone/Screens/HomeScreens/Featured.dart';
 import 'package:UdemyClone/Screens/HomeScreens/HomeCourse.dart';
 import 'package:UdemyClone/Screens/HomeScreens/MyCourses.dart';
 import 'package:UdemyClone/Screens/HomeScreens/Search.dart';
 import 'package:UdemyClone/Screens/HomeScreens/WishList.dart';
+import 'package:UdemyClone/blocs/CartBloc.dart';
+import 'package:UdemyClone/blocs/WishListBloc.dart';
+import 'package:UdemyClone/notficationProvider/CartNotification.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 import '../blocs/CoursesBloc.dart';
 import '../blocs/GirdCourseBloc.dart';
@@ -35,6 +38,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
       body: PageView(
         onPageChanged: (index) {
@@ -53,11 +57,34 @@ class _HomeScreenState extends State<HomeScreen> {
                 create: (BuildContext context) => GridCoursesBloc(),
               ),
             ],
-            child: HomeCourses(),
+            child: ChangeNotifierProvider(
+              create: (context) => CartItemsCount(),
+              child: HomeCourses(),
+            ),
           ),
           Search(),
           MyCourses(),
-          WishList(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider<WishListBloc>(
+                create: (BuildContext context) => WishListBloc(),
+              ),
+              BlocProvider<CartBloc>(
+                create: (BuildContext context) => CartBloc(),
+              ),
+            ],
+            child: ChangeNotifierProvider(
+              create: (context) => CartItemsCount(),
+              child: WishList(),
+            ),
+          ),
+          // BlocProvider(
+          //   create: (BuildContext context) => WishListBloc(),
+          //   child: ChangeNotifierProvider(
+          //     create: (BuildContext context) => CartItemsCount(),
+          //     child: WishList(),
+          //   ),
+          // ),
           Account(),
         ],
       ),

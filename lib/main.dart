@@ -1,9 +1,12 @@
 import 'package:UdemyClone/Screens/HomeScreens/HomeCourse.dart';
+import 'package:UdemyClone/Screens/HomeScreens/WishList.dart';
 import 'package:UdemyClone/Screens/SignInOptions/Login_Screen.dart';
 import 'package:UdemyClone/Services/PrefStorage.dart';
+import 'package:UdemyClone/blocs/CartBloc.dart';
 import 'package:UdemyClone/blocs/CoursesBloc.dart';
 import 'package:UdemyClone/blocs/GirdCourseBloc.dart';
 import 'package:UdemyClone/states/CourseState.dart';
+import 'package:UdemyClone/widgets/SlidableCourseItem.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -46,10 +49,11 @@ class MyApp extends StatelessWidget {
             ),
             BlocProvider<GridCoursesBloc>(
               create: (BuildContext context) => GridCoursesBloc(),
-            ),
+            )
           ],
           child: LoginScreen(),
         )
+      //home: WishList(),
     );
   }
 }

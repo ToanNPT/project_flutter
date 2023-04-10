@@ -1,11 +1,16 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get_navigation/src/routes/transitions_type.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
-
+import 'package:provider/provider.dart';
 import '../Core/Colors/Hex_Color.dart';
 import '../Screens/DetailsScreens/DetailsScreen.dart';
+import '../blocs/CartBloc.dart';
+import '../blocs/WishListBloc.dart';
 import '../models/Course.dart';
+import '../notficationProvider/CartNotification.dart';
 
 class CourseCard extends StatelessWidget{
    final Course course;
@@ -43,9 +48,22 @@ class CourseCard extends StatelessWidget{
     return GestureDetector(
       onTap: () {
         Get.to(
-          DetailsScreen(),
-          transition: Transition.rightToLeftWithFade,
-          arguments: this.course,
+            MultiBlocProvider(
+              providers: [
+                BlocProvider<WishListBloc>(
+                  create: (BuildContext context) => WishListBloc(),
+                ),
+                BlocProvider<CartBloc>(
+                  create: (BuildContext context) => CartBloc(),
+                ),
+              ],
+              child:  ChangeNotifierProvider(
+                create: (context) => CartItemsCount(),
+                child: DetailsScreen(),
+              ),
+            ),
+            //transition: Transition.rightToLeftWithFade,
+            arguments: course,
         );
       },
       child: Container(

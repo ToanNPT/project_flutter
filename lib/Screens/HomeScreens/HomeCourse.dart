@@ -3,6 +3,7 @@ import 'package:UdemyClone/Screens/HomeScreens/MyList.dart';
 import 'package:UdemyClone/blocs/CartBloc.dart';
 import 'package:UdemyClone/blocs/CoursesBloc.dart';
 import 'package:UdemyClone/blocs/GirdCourseBloc.dart';
+import 'package:UdemyClone/blocs/ReviewBloc.dart';
 import 'package:UdemyClone/blocs/WishListBloc.dart';
 import 'package:UdemyClone/events/GridCourseEvent.dart';
 import 'package:UdemyClone/notficationProvider/CartNotification.dart';
@@ -280,6 +281,10 @@ class _HomeCoursesState extends State<HomeCourses> {
                                             BlocProvider<CartBloc>(
                                               create: (BuildContext context) =>
                                                   CartBloc(),
+                                            ),
+                                            BlocProvider<ReviewBloc>(
+                                              create: (BuildContext context) =>
+                                                  ReviewBloc(),
                                             ),
                                           ],
                                           child:  ChangeNotifierProvider(

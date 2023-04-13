@@ -1,9 +1,12 @@
 import 'package:UdemyClone/Screens/HomeScreens/MyList.dart';
 import 'package:UdemyClone/blocs/CartBloc.dart';
+import 'package:UdemyClone/blocs/ReviewBloc.dart';
 import 'package:UdemyClone/blocs/WishListBloc.dart';
+import 'package:UdemyClone/events/ReviewEvent.dart';
 import 'package:UdemyClone/events/WishListEvent.dart';
 import 'package:UdemyClone/models/Course.dart';
 import 'package:UdemyClone/states/CartState.dart';
+import 'package:UdemyClone/states/ReviewState.dart';
 import 'package:UdemyClone/states/WishListState.dart';
 import 'package:UdemyClone/widgets/viewHtml.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -36,6 +39,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   WishListBloc wishListBloc;
   CartBloc cartBloc;
+  ReviewBloc reviewBloc;
 
   @override
   void initState() {
@@ -215,6 +219,18 @@ class _DetailsScreenState extends State<DetailsScreen> {
                   );
                 }
               },
+            ),
+            BlocListener<ReviewBloc, ReviewState>(
+                bloc: reviewBloc,
+                listener: (context,state){
+                  if(state is ReviewLoadingState){
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if(state is ReviewLoadedState){
+                    reviewBloc.add(GetReviewOfCourseEvent(course.id));
+                  }
+                }
             )
           ],
           child: SingleChildScrollView(

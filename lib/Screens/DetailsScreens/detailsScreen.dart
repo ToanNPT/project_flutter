@@ -9,6 +9,7 @@ import 'package:UdemyClone/models/ReviewModel.dart';
 import 'package:UdemyClone/states/CartState.dart';
 import 'package:UdemyClone/states/ReviewState.dart';
 import 'package:UdemyClone/states/WishListState.dart';
+import 'package:UdemyClone/widgets/RateStar.dart';
 import 'package:UdemyClone/widgets/viewHtml.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
@@ -429,74 +430,118 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   content: course.description,
                                 ),
                                 Container(
-                                  color: Colors.black,
+                                  decoration: BoxDecoration(
+                                    color: Colors.black,
+                                  ),
                                   child: Column(
                                     children: [
                                       Expanded(
-                                        child: BlocBuilder<ReviewCourseBloc, ReviewState>(
+                                        child: BlocBuilder<ReviewCourseBloc,
+                                            ReviewState>(
                                           builder: (context, state) {
-                                            if (state is ReviewCourseLoadedState) {
+                                            if (state
+                                                is ReviewCourseLoadedState) {
                                               // display your review data here
                                               return ListView.builder(
                                                 itemCount: state.reviews.length,
                                                 itemBuilder: (context, index) {
-                                                  final post = state.reviews[index];
+                                                  final post =
+                                                      state.reviews[index];
                                                   return Container(
-                                                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                                                    padding:
+                                                        EdgeInsets.symmetric(
+                                                            vertical: 8.0),
                                                     child: Row(
                                                       children: [
                                                         Container(
-                                                          width: 370,
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width -
+                                                              20,
                                                           height: 100,
-                                                          decoration: BoxDecoration(
-                                                            borderRadius: BorderRadius.circular(10),
-                                                            color: Colors.black, // set background color to black
+                                                          decoration:
+                                                              BoxDecoration(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        10),
+                                                            color: Colors
+                                                                .black, // set background color to black
                                                           ),
                                                           child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
                                                             children: [
                                                               Row(
                                                                 children: [
                                                                   Text(
                                                                     post.username,
                                                                     style: TextStyle(
-                                                                      fontSize: 12,
-                                                                      color: Colors.white,
-                                                                    ),
+                                                                        fontSize:
+                                                                            12,
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontWeight:
+                                                                            FontWeight.bold),
                                                                   ),
-                                                                  SizedBox(width: 5),
-                                                                  Icon(Icons.star, size: 15, color: Colors.yellow),
-                                                                  Icon(Icons.star, size: 15, color: Colors.yellow),
-                                                                  Icon(Icons.star, size: 15, color: Colors.yellow),
-                                                                  Icon(Icons.star, size: 15, color: Colors.yellow),
-                                                                  Icon(Icons.star, size: 15, color: Colors.grey),
-                                                                  SizedBox(width: 5),
+                                                                  SizedBox(
+                                                                      width: 5),
+                                                                  RateStar(
+                                                                    rate: double
+                                                                        .parse(post
+                                                                            .rate),
+                                                                  ),
+                                                                  SizedBox(
+                                                                      width: 5),
                                                                   Text(
-                                                                    "4/5 stars",
-                                                                    style: TextStyle(
-                                                                      fontSize: 12,
-                                                                      color: Colors.white,
+                                                                    "${post.rate}/5 stars",
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontSize:
+                                                                          12,
+                                                                      color: Colors
+                                                                          .white,
                                                                     ),
                                                                   ),
                                                                 ],
                                                               ),
-                                                              SizedBox(height: 5),
+                                                              SizedBox(
+                                                                  height: 5),
                                                               Text(
-                                                                'Comment at '+ post.createDate.substring(0,10),
-                                                                style: TextStyle(
+                                                                'Comment at ' +
+                                                                    post.createDate
+                                                                        .substring(
+                                                                            0,
+                                                                            10),
+                                                                style:
+                                                                    TextStyle(
                                                                   fontSize: 12,
-                                                                  color: Colors.white,
+                                                                  color: Colors
+                                                                      .white,
                                                                 ),
                                                               ),
-                                                              SizedBox(height: 5),
-                                                              Text(
-                                                                post.content,
-                                                                style: TextStyle(
-                                                                  fontSize: 15,
-                                                                  color: Colors.white,
+                                                              SizedBox(
+                                                                  height: 5),
+                                                              Container(
+                                                                width: MediaQuery.of(
+                                                                            context)
+                                                                        .size
+                                                                        .width -
+                                                                    20,
+                                                                child: Text(
+                                                                  post.content,
+                                                                  style: TextStyle(
+                                                                      fontSize:
+                                                                          15,
+                                                                      color: Colors
+                                                                          .white,
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .visible),
                                                                 ),
                                                               ),
-
                                                             ],
                                                           ),
                                                         ),
@@ -505,10 +550,11 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                                   );
                                                 },
                                               );
-                                            }
-                                            else if(state is NoReviewCourseLoadedState){
+                                            } else if (state
+                                                is NoReviewCourseLoadedState) {
                                               return Container(
-                                                margin: EdgeInsets.only(top: 25),
+                                                margin:
+                                                    EdgeInsets.only(top: 25),
                                                 child: Text(
                                                   "Sorry, there are no reviews to show!",
                                                   style: TextStyle(
@@ -521,7 +567,8 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                             } else {
                                               // display a loading indicator while the data is being fetched
                                               return Center(
-                                                child: CircularProgressIndicator(),
+                                                child:
+                                                    CircularProgressIndicator(),
                                               );
                                             }
                                           },

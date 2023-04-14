@@ -1,4 +1,5 @@
 import 'package:UdemyClone/blocs/CartBloc.dart';
+import 'package:UdemyClone/blocs/ReviewCourseBloc.dart';
 import 'package:UdemyClone/blocs/WishListBloc.dart';
 import 'package:UdemyClone/states/CartState.dart';
 import 'package:UdemyClone/widgets/SlidableCartItem.dart';
@@ -116,6 +117,10 @@ class _MyListState extends State<MyList> {
                                   BlocProvider<CartBloc>(
                                     create: (BuildContext context) =>
                                         CartBloc(),
+                                  ),
+                                  BlocProvider<ReviewCourseBloc>(
+                                    create: (BuildContext context) =>
+                                        ReviewCourseBloc(),
                                   ),
                                 ],
                                 child: ChangeNotifierProvider(

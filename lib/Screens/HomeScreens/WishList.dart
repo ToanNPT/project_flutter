@@ -1,4 +1,5 @@
 import 'package:UdemyClone/Screens/HomeScreens/MyList.dart';
+import 'package:UdemyClone/blocs/ReviewCourseBloc.dart';
 import 'package:UdemyClone/blocs/WishListBloc.dart';
 import 'package:UdemyClone/events/CartEvent.dart';
 import 'package:UdemyClone/events/WishListEvent.dart';
@@ -193,6 +194,10 @@ class _WishListState extends State<WishList> {
                           BlocProvider<CartBloc>(
                             create: (BuildContext context) =>
                                 CartBloc(),
+                          ),
+                          BlocProvider<ReviewCourseBloc>(
+                            create: (BuildContext context) =>
+                                ReviewCourseBloc(),
                           ),
                         ],
                         child: ChangeNotifierProvider(

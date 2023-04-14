@@ -1,10 +1,11 @@
 import 'package:UdemyClone/Screens/HomeScreens/MyList.dart';
 import 'package:UdemyClone/blocs/CartBloc.dart';
-import 'package:UdemyClone/blocs/ReviewBloc.dart';
+import 'package:UdemyClone/blocs/ReviewCourseBloc.dart';
 import 'package:UdemyClone/blocs/WishListBloc.dart';
 import 'package:UdemyClone/events/ReviewEvent.dart';
 import 'package:UdemyClone/events/WishListEvent.dart';
 import 'package:UdemyClone/models/Course.dart';
+import 'package:UdemyClone/models/ReviewModel.dart';
 import 'package:UdemyClone/states/CartState.dart';
 import 'package:UdemyClone/states/ReviewState.dart';
 import 'package:UdemyClone/states/WishListState.dart';
@@ -31,6 +32,7 @@ class DetailsScreen extends StatefulWidget {
 
 class _DetailsScreenState extends State<DetailsScreen> {
   Course course;
+  List<ReviewModel> reviews;
 
   String appName;
   String packageName;
@@ -39,7 +41,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
 
   WishListBloc wishListBloc;
   CartBloc cartBloc;
-  ReviewBloc reviewBloc;
+  ReviewCourseBloc reviewCourseBloc;
 
   @override
   void initState() {
@@ -47,6 +49,9 @@ class _DetailsScreenState extends State<DetailsScreen> {
     course = Get.arguments;
     wishListBloc = BlocProvider.of<WishListBloc>(context);
     cartBloc = BlocProvider.of<CartBloc>(context);
+    reviewCourseBloc = BlocProvider.of<ReviewCourseBloc>(context);
+    final courseId = course.id.trim();
+    reviewCourseBloc.add(GetReviewOfCourseEvent(courseId));
   }
 
   @override
@@ -118,22 +123,22 @@ class _DetailsScreenState extends State<DetailsScreen> {
                         right: 12,
                         child: mybloc.itemCount != null && mybloc.itemCount > 0
                             ? Container(
-                            padding: EdgeInsets.all(5),
-                            width: 25,
-                            height: 25,
-                            decoration: BoxDecoration(
-                              color: Colors.green,
-                              borderRadius: BorderRadius.circular(60),
-                            ),
-                            child: Center(
-                              child: Text(
-                                mybloc.itemCount.toString(),
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 10,
+                                padding: EdgeInsets.all(5),
+                                width: 25,
+                                height: 25,
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.circular(60),
                                 ),
-                              ),
-                            ))
+                                child: Center(
+                                  child: Text(
+                                    mybloc.itemCount.toString(),
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ))
                             : Center(),
                       );
                     },
@@ -145,6 +150,24 @@ class _DetailsScreenState extends State<DetailsScreen> {
         ),
         body: MultiBlocListener(
           listeners: [
+            // BlocListener<ReviewCourseBloc, ReviewState>(
+            //   bloc: reviewCourseBloc,
+            //   listener: (context, state) {
+            //     if (state is ReviewInitState) {
+            //       context
+            //           .read<ReviewCourseBloc>()
+            //           .add(GetReviewOfCourseEvent(course.id));
+            //     } else if (state is ReviewCourseLoadingState) {
+            //       return Center(
+            //         child: CircularProgressIndicator(),
+            //       );
+            //     } else if (state is ReviewLoadedState){
+            //       setState(() {
+            //         this.reviews = state.reviews;
+            //       });
+            //     }
+            //   },
+            // ),
             BlocListener<WishListBloc, WishListState>(
               bloc: wishListBloc,
               listener: (context, state) {
@@ -184,7 +207,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
             ),
             BlocListener<CartBloc, CartState>(
               bloc: cartBloc,
-              listener: (context, state){
+              listener: (context, state) {
                 if (state is CartAddedResult) {
                   Navigator.pop(context);
                   if (state.isSuccess) {
@@ -207,7 +230,7 @@ class _DetailsScreenState extends State<DetailsScreen> {
                       btnOkOnPress: () {},
                     )..show();
                   }
-                } else if(state is CartAddingState){
+                } else if (state is CartAddingState) {
                   showDialog(
                     context: context,
                     barrierDismissible: false,
@@ -220,18 +243,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
                 }
               },
             ),
-            BlocListener<ReviewBloc, ReviewState>(
-                bloc: reviewBloc,
-                listener: (context,state){
-                  if(state is ReviewLoadingState){
-                    return Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else if(state is ReviewLoadedState){
-                    reviewBloc.add(GetReviewOfCourseEvent(course.id));
-                  }
-                }
-            )
           ],
           child: SingleChildScrollView(
             child: Padding(
@@ -418,12 +429,104 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                   content: course.description,
                                 ),
                                 Container(
-                                  child: Center(
-                                    child: Text('Display Tab 2',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 22,
-                                            fontWeight: FontWeight.bold)),
+                                  color: Colors.black,
+                                  child: Column(
+                                    children: [
+                                      Expanded(
+                                        child: BlocBuilder<ReviewCourseBloc, ReviewState>(
+                                          builder: (context, state) {
+                                            if (state is ReviewCourseLoadedState) {
+                                              // display your review data here
+                                              return ListView.builder(
+                                                itemCount: state.reviews.length,
+                                                itemBuilder: (context, index) {
+                                                  final post = state.reviews[index];
+                                                  return Container(
+                                                    padding: EdgeInsets.symmetric(vertical: 8.0),
+                                                    child: Row(
+                                                      children: [
+                                                        Container(
+                                                          width: 370,
+                                                          height: 100,
+                                                          decoration: BoxDecoration(
+                                                            borderRadius: BorderRadius.circular(10),
+                                                            color: Colors.black, // set background color to black
+                                                          ),
+                                                          child: Column(
+                                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                                            children: [
+                                                              Text(
+                                                                post.username,
+                                                                style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors.white,
+                                                                ),
+                                                              ),
+                                                              SizedBox(height: 5),
+                                                              Row(
+                                                                children: [
+                                                                  Icon(Icons.star, size: 15, color: Colors.yellow),
+                                                                  Icon(Icons.star, size: 15, color: Colors.yellow),
+                                                                  Icon(Icons.star, size: 15, color: Colors.yellow),
+                                                                  Icon(Icons.star, size: 15, color: Colors.yellow),
+                                                                  Icon(Icons.star, size: 15, color: Colors.grey),
+                                                                  SizedBox(width: 5),
+                                                                  Text(
+                                                                    "4/5 stars",
+                                                                    style: TextStyle(
+                                                                      fontSize: 12,
+                                                                      color: Colors.white,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                              SizedBox(height: 5),
+                                                              Text(
+                                                                post.content,
+                                                                style: TextStyle(
+                                                                  fontSize: 15,
+                                                                  color: Colors.white,
+                                                                ),
+                                                              ),
+                                                              SizedBox(height: 5),
+                                                              Text(
+                                                                'Comment at '+ post.createDate,
+                                                                style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors.white,
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                  );
+                                                },
+                                              );
+                                            }
+                                            else if(state is NoReviewCourseLoadedState){
+                                              return Container(
+                                                margin: EdgeInsets.only(top: 25),
+                                                child: Text(
+                                                  "Sorry, there are no reviews to show!",
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              );
+                                            } else {
+                                              // display a loading indicator while the data is being fetched
+                                              return Center(
+                                                child: CircularProgressIndicator(),
+                                              );
+                                            }
+                                          },
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],

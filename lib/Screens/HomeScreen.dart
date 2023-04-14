@@ -4,7 +4,7 @@ import 'package:UdemyClone/Screens/HomeScreens/MyCourses.dart';
 import 'package:UdemyClone/Screens/HomeScreens/Search.dart';
 import 'package:UdemyClone/Screens/HomeScreens/WishList.dart';
 import 'package:UdemyClone/blocs/CartBloc.dart';
-import 'package:UdemyClone/blocs/ReviewBloc.dart';
+import 'package:UdemyClone/blocs/ReviewCourseBloc.dart';
 import 'package:UdemyClone/blocs/WishListBloc.dart';
 import 'package:UdemyClone/notficationProvider/CartNotification.dart';
 import 'package:flutter/material.dart';
@@ -73,8 +73,8 @@ class _HomeScreenState extends State<HomeScreen> {
               BlocProvider<CartBloc>(
                 create: (BuildContext context) => CartBloc(),
               ),
-              BlocProvider<ReviewBloc>(
-                create: (BuildContext context) => ReviewBloc(),
+              BlocProvider<ReviewCourseBloc>(
+                create: (BuildContext context) => ReviewCourseBloc(),
               ),
             ],
             child: ChangeNotifierProvider(

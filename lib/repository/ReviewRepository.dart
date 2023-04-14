@@ -14,7 +14,7 @@ class ReviewRepository {
 
   Future<List<ReviewModel>> fetchReviewCourseData(String courseId) async {
     Response response = await get(
-        Uri.parse(ApiConst.COURSE_REVIEWS_ENDPOINT+"/"+courseId),
+        Uri.parse(ApiConst.COURSE_REVIEWS_ENDPOINT+courseId),
         headers: {"Accept": "application/json;charset=utf-8",}
     );
 

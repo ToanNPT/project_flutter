@@ -1,9 +1,9 @@
 class ReviewModel {
-  String id;
+  num id;
   String username;
   String courseId;
   String content;
-  double rate;
+  String rate;
   String createDate;
   String updateDate;
 
@@ -22,8 +22,7 @@ class ReviewModel {
     return ReviewModel(
         id: json["id"],
         username: json["username"],
-        //category: json["category.name"],
-        courseId: json["language"],
+        courseId: json["courseId"],
         content: json["content"],
         rate: json["rate"],
         createDate: json["createDate"],

@@ -7,4 +7,4 @@ const String GET_ALL_COURSE_ENDPOINT = DOMAIN + 'courses';
 const String SEARCH_ENDPOINT = DOMAIN +'courses/search';
 const String WISHLIST = DOMAIN + "wishlist";
 const String CART = DOMAIN + "cart";
-const String COURSE_REVIEWS_ENDPOINT = DOMAIN + 'reviews/course';
+const String COURSE_REVIEWS_ENDPOINT = DOMAIN + 'reviews/course/';

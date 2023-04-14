@@ -13,6 +13,7 @@ class ReviewCourseLoadedState extends ReviewState{
   final List<ReviewModel> reviews;
   ReviewCourseLoadedState(this.reviews);
 }
+class NoReviewCourseLoadedState extends ReviewState{}
 
 class ReviewGetState extends ReviewState{}
 

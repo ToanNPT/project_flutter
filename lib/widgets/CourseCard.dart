@@ -1,3 +1,4 @@
+import 'package:UdemyClone/blocs/ReviewCourseBloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/routes/transitions_type.dart';
@@ -55,6 +56,9 @@ class CourseCard extends StatelessWidget{
                 ),
                 BlocProvider<CartBloc>(
                   create: (BuildContext context) => CartBloc(),
+                ),
+                BlocProvider<ReviewCourseBloc>(
+                  create: (BuildContext context) => ReviewCourseBloc(),
                 ),
               ],
               child:  ChangeNotifierProvider(

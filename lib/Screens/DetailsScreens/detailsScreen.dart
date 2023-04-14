@@ -455,16 +455,16 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                                           child: Column(
                                                             crossAxisAlignment: CrossAxisAlignment.start,
                                                             children: [
-                                                              Text(
-                                                                post.username,
-                                                                style: TextStyle(
-                                                                  fontSize: 12,
-                                                                  color: Colors.white,
-                                                                ),
-                                                              ),
-                                                              SizedBox(height: 5),
                                                               Row(
                                                                 children: [
+                                                                  Text(
+                                                                    post.username,
+                                                                    style: TextStyle(
+                                                                      fontSize: 12,
+                                                                      color: Colors.white,
+                                                                    ),
+                                                                  ),
+                                                                  SizedBox(width: 5),
                                                                   Icon(Icons.star, size: 15, color: Colors.yellow),
                                                                   Icon(Icons.star, size: 15, color: Colors.yellow),
                                                                   Icon(Icons.star, size: 15, color: Colors.yellow),
@@ -482,20 +482,21 @@ class _DetailsScreenState extends State<DetailsScreen> {
                                                               ),
                                                               SizedBox(height: 5),
                                                               Text(
+                                                                'Comment at '+ post.createDate.substring(0,10),
+                                                                style: TextStyle(
+                                                                  fontSize: 12,
+                                                                  color: Colors.white,
+                                                                ),
+                                                              ),
+                                                              SizedBox(height: 5),
+                                                              Text(
                                                                 post.content,
                                                                 style: TextStyle(
                                                                   fontSize: 15,
                                                                   color: Colors.white,
                                                                 ),
                                                               ),
-                                                              SizedBox(height: 5),
-                                                              Text(
-                                                                'Comment at '+ post.createDate,
-                                                                style: TextStyle(
-                                                                  fontSize: 12,
-                                                                  color: Colors.white,
-                                                                ),
-                                                              ),
+
                                                             ],
                                                           ),
                                                         ),

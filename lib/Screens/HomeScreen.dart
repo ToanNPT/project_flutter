@@ -4,6 +4,7 @@ import 'package:UdemyClone/Screens/HomeScreens/MyCourses.dart';
 import 'package:UdemyClone/Screens/HomeScreens/Search.dart';
 import 'package:UdemyClone/Screens/HomeScreens/WishList.dart';
 import 'package:UdemyClone/blocs/CartBloc.dart';
+import 'package:UdemyClone/blocs/MyCourseBloc.dart';
 import 'package:UdemyClone/blocs/ReviewCourseBloc.dart';
 import 'package:UdemyClone/blocs/WishListBloc.dart';
 import 'package:UdemyClone/notficationProvider/CartNotification.dart';
@@ -64,7 +65,14 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
           Search(),
-          MyCourses(),
+          MultiBlocProvider(
+              providers: [
+                BlocProvider<MyCourseBloc>(
+                  create: (BuildContext context) => MyCourseBloc(),
+                )
+              ],
+              child: MyCourses(),
+          ),
           MultiBlocProvider(
             providers: [
               BlocProvider<WishListBloc>(

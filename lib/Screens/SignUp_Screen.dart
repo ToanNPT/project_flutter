@@ -1,3 +1,5 @@
+import 'package:UdemyClone/blocs/RegisterBloc.dart';
+import 'package:UdemyClone/models/RegisterPayload.dart';
 import 'package:flutter/material.dart';
 
 import '../../Core/Animation/Fade_Animation.dart';
@@ -5,7 +7,15 @@ import '../../Core/Colors/Hex_Color.dart';
 import 'SignInOptions/Login_Screen.dart';
 
 
-enum FormData { Name, Phone, Email, Gender, password, ConfirmPassword }
+enum FormData {
+  FullName,
+  Username,
+  Phone,
+  BirthDate,
+  Gender,
+  Email,
+  password,
+  ConfirmPassword }
 
 class SignupScreen extends StatefulWidget {
   @override
@@ -21,11 +31,27 @@ class _SignupScreenState extends State<SignupScreen> {
 
   FormData selected;
 
+  TextEditingController usernameController = new TextEditingController();
   TextEditingController nameController = new TextEditingController();
   TextEditingController phoneController = new TextEditingController();
   TextEditingController emailController = new TextEditingController();
   TextEditingController passwordController = new TextEditingController();
   TextEditingController confirmPasswordController = new TextEditingController();
+
+  final _registerBloc = RegisterBloc();
+  final _textEditingController = <String, TextEditingController>{};
+
+  TextEditingController _getTextEditingController(String id) {
+    return _textEditingController[id] ??= TextEditingController();
+  }
+  @override
+  void dispose() {
+    _registerBloc.dispose();
+    _textEditingController.values.forEach((element) {
+      element.dispose();
+    });
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,16 +128,16 @@ class _SignupScreenState extends State<SignupScreen> {
                             height: 40,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(12.0),
-                              color: selected == FormData.Email
+                              color: selected == FormData.FullName
                                   ? enabled
                                   : backgroundColor,
                             ),
                             padding: const EdgeInsets.all(5.0),
                             child: TextField(
-                              controller: nameController,
+                              controller: _getTextEditingController("fullname"),
                               onTap: () {
                                 setState(() {
-                                  selected = FormData.Name;
+                                  selected = FormData.FullName;
                                 });
                               },
                               decoration: InputDecoration(
@@ -119,21 +145,70 @@ class _SignupScreenState extends State<SignupScreen> {
                                 border: InputBorder.none,
                                 prefixIcon: Icon(
                                   Icons.title,
-                                  color: selected == FormData.Name
+                                  color: selected == FormData.FullName
                                       ? enabledtxt
                                       : deaible,
                                   size: 20,
                                 ),
                                 hintText: 'Full Name',
                                 hintStyle: TextStyle(
-                                    color: selected == FormData.Name
+                                    color: selected == FormData.FullName
                                         ? enabledtxt
                                         : deaible,
                                     fontSize: 12),
                               ),
                               textAlignVertical: TextAlignVertical.center,
                               style: TextStyle(
-                                  color: selected == FormData.Name
+                                  color: selected == FormData.FullName
+                                      ? enabledtxt
+                                      : deaible,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        FadeAnimation(
+                          delay: 1,
+                          child: Container(
+                            width: 300,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.0),
+                              color: selected == FormData.Username
+                                  ? enabled
+                                  : backgroundColor,
+                            ),
+                            padding: const EdgeInsets.all(5.0),
+                            child: TextField(
+                              controller: _getTextEditingController("username"),
+                              onTap: () {
+                                setState(() {
+                                  selected = FormData.Username;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                enabledBorder: InputBorder.none,
+                                border: InputBorder.none,
+                                prefixIcon: Icon(
+                                  Icons.title,
+                                  color: selected == FormData.Username
+                                      ? enabledtxt
+                                      : deaible,
+                                  size: 20,
+                                ),
+                                hintText: 'Username',
+                                hintStyle: TextStyle(
+                                    color: selected == FormData.Username
+                                        ? enabledtxt
+                                        : deaible,
+                                    fontSize: 12),
+                              ),
+                              textAlignVertical: TextAlignVertical.center,
+                              style: TextStyle(
+                                  color: selected == FormData.Username
                                       ? enabledtxt
                                       : deaible,
                                   fontWeight: FontWeight.bold,
@@ -157,7 +232,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                             padding: const EdgeInsets.all(5.0),
                             child: TextField(
-                              controller: phoneController,
+                              controller: _getTextEditingController("phone"),
                               onTap: () {
                                 setState(() {
                                   selected = FormData.Phone;
@@ -206,7 +281,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             ),
                             padding: const EdgeInsets.all(5.0),
                             child: TextField(
-                              controller: emailController,
+                              controller: _getTextEditingController("email"),
                               onTap: () {
                                 setState(() {
                                   selected = FormData.Email;
@@ -248,13 +323,113 @@ class _SignupScreenState extends State<SignupScreen> {
                             width: 300,
                             height: 40,
                             decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.0),
+                              color: selected == FormData.BirthDate
+                                  ? enabled
+                                  : backgroundColor,
+                            ),
+                            padding: const EdgeInsets.all(5.0),
+                            child: TextField(
+                              controller: _getTextEditingController("birthdate"),
+                              onTap: () {
+                                setState(() {
+                                  selected = FormData.BirthDate;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                enabledBorder: InputBorder.none,
+                                border: InputBorder.none,
+                                prefixIcon: Icon(
+                                  Icons.email_outlined,
+                                  color: selected == FormData.BirthDate
+                                      ? enabledtxt
+                                      : deaible,
+                                  size: 20,
+                                ),
+                                hintText: 'BirthDate'
+                                    ''
+                                    '',
+                                hintStyle: TextStyle(
+                                    color: selected == FormData.BirthDate
+                                        ? enabledtxt
+                                        : deaible,
+                                    fontSize: 12),
+                              ),
+                              textAlignVertical: TextAlignVertical.center,
+                              style: TextStyle(
+                                  color: selected == FormData.BirthDate
+                                      ? enabledtxt
+                                      : deaible,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        FadeAnimation(
+                          delay: 1,
+                          child: Container(
+                            width: 300,
+                            height: 40,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.0),
+                              color: selected == FormData.Gender
+                                  ? enabled
+                                  : backgroundColor,
+                            ),
+                            padding: const EdgeInsets.all(5.0),
+                            child: TextField(
+                              controller: _getTextEditingController("gender"),
+                              onTap: () {
+                                setState(() {
+                                  selected = FormData.Gender;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                enabledBorder: InputBorder.none,
+                                border: InputBorder.none,
+                                prefixIcon: Icon(
+                                  Icons.email_outlined,
+                                  color: selected == FormData.Gender
+                                      ? enabledtxt
+                                      : deaible,
+                                  size: 20,
+                                ),
+                                hintText: 'Gender',
+                                hintStyle: TextStyle(
+                                    color: selected == FormData.Gender
+                                        ? enabledtxt
+                                        : deaible,
+                                    fontSize: 12),
+                              ),
+                              textAlignVertical: TextAlignVertical.center,
+                              style: TextStyle(
+                                  color: selected == FormData.Gender
+                                      ? enabledtxt
+                                      : deaible,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        FadeAnimation(
+                          delay: 1,
+                          child: Container(
+                            width: 300,
+                            height: 40,
+                            decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(12.0),
                                 color: selected == FormData.password
                                     ? enabled
                                     : backgroundColor),
                             padding: const EdgeInsets.all(5.0),
                             child: TextField(
-                              controller: passwordController,
+                              controller: _getTextEditingController("password"),
                               onTap: () {
                                 setState(() {
                                   selected = FormData.password;
@@ -380,26 +555,128 @@ class _SignupScreenState extends State<SignupScreen> {
                           height: 25,
                         ),
                         FadeAnimation(
-                          delay: 1,
-                          child: TextButton(
-                              onPressed: () {},
-                              child: Text(
-                                "Sign Up",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  letterSpacing: 0.5,
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              style: TextButton.styleFrom(
-                                  backgroundColor: const Color(0xFF2697FF),
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 14.0, horizontal: 80),
-                                  shape: RoundedRectangleBorder(
-                                      borderRadius:
-                                          BorderRadius.circular(12.0)))),
-                        ),
+                            delay: 0,
+                            child: StreamBuilder<bool>(
+                              stream: _registerBloc.isLoading,
+                              builder: (context, snapshot) {
+                                if (snapshot.data == true) {
+                                  return CircularProgressIndicator();
+                                } else {
+                                  return TextButton(
+                                      onPressed: () async {
+                                        final username =
+                                        _getTextEditingController(
+                                            "username")
+                                            .text
+                                            .toString();
+                                        final password =
+                                        _getTextEditingController(
+                                            "password")
+                                            .text
+                                            .toString();
+                                        final fullname =
+                                        _getTextEditingController(
+                                            "fullname")
+                                            .text
+                                            .toString();
+                                        final birthdate =
+                                        _getTextEditingController(
+                                            "birthdate")
+                                            .text
+                                            .toString();
+                                        final gender =
+                                        _getTextEditingController(
+                                            "gender")
+                                            .text
+                                            .toString();
+                                        final email =
+                                        _getTextEditingController(
+                                            "email")
+                                            .text
+                                            .toString();
+                                        final phone =
+                                        _getTextEditingController(
+                                            "phone")
+                                            .text
+                                            .toString();
+
+                                        final res = await _registerBloc.register(
+                                            new RegisterPayload(
+                                                username, password,fullname,birthdate,gender,email,phone));
+                                        if (res) {
+                                          return showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  AlertDialog(
+                                                    title: Text('Register Successful'),
+                                                    content: Text(
+                                                        'You can login to continue'),
+                                                    actions: <Widget>[
+                                                      TextButton(
+                                                        child: Text('CANCEL'),
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      ),
+                                                      TextButton(
+                                                        child: Text('OK'),
+                                                        onPressed: () {
+                                                          // Do something here
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ));
+                                        } else {
+                                          return showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  AlertDialog(
+                                                    title: Text('Register Fail'),
+                                                    content: Text(
+                                                        'Something was wrong'),
+                                                    actions: <Widget>[
+                                                      TextButton(
+                                                        child: Text('CANCEL'),
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      ),
+                                                      TextButton(
+                                                        child: Text('OK'),
+                                                        onPressed: () {
+                                                          // Do something here
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ));
+                                        }
+                                      },
+                                      child: Text(
+                                        "Register",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          letterSpacing: 0.5,
+                                          fontSize: 16.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                      style: TextButton.styleFrom(
+                                          backgroundColor: Color(0xFF2697FF),
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 14.0, horizontal: 80),
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                              BorderRadius.circular(
+                                                  12.0))));
+                                }
+                              },
+                            )),
                       ],
                     ),
                   ),
@@ -430,7 +707,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             return LoginScreen();
                           }));
                         },
-                        child: Text("Sing in",
+                        child: Text("Sign in",
                             style: TextStyle(
                                 color: Colors.white.withOpacity(0.9),
                                 fontWeight: FontWeight.bold,

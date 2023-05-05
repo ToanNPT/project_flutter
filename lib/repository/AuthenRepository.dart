@@ -9,7 +9,6 @@ class AuthenRepository {
   String userUrl = ApiConst.LOGIN_ENDPOINT;
 
   Future<AuthUser> login(LoginPayload payload) async {
-    final p = payload.toJson();
     Response response = await post(
       Uri.parse(userUrl),
       body: jsonEncode(payload.toJson())

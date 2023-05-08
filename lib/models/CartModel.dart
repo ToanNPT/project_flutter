@@ -9,7 +9,7 @@ class CartModel {
   CartModel({this.username, this.totalPrice, this.paymentPrice, this.cartDetailList});
 
   factory CartModel.fromJson(Map<String, dynamic> json) {
-    return CartModel(
+    return  CartModel(
         username: json["username"],
         totalPrice: json["totalPrice"],
         paymentPrice: json["paymentPrice"],

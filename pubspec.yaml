@@ -23,7 +23,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  chewie: null
   cloud_firestore: ^4.4.5
   firebase_core_platform_interface: ^4.5.3
   cupertino_icons: ^1.0.0
@@ -40,7 +39,7 @@ dependencies:
   package_info: ^2.0.0
   page_transition: ^2.0.9
   shared_preferences: ^2.0.5
-  video_player: null
+  video_player: ^2.5.0
   equatable: ^2.0.5
   flutter_bloc: ^7.1.0
   simple_animations: ^4.1.0
@@ -57,6 +56,7 @@ dependencies:
   flutter_slidable: ^1.3.0
   awesome_dialog: 3.0.0
   provider: ^6.0.0
+  chewie: ^1.4.0
 
 
 dev_dependencies:

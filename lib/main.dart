@@ -1,8 +1,10 @@
 import 'package:UdemyClone/Screens/HomeScreens/HomeCourse.dart';
 import 'package:UdemyClone/Screens/HomeScreens/WishList.dart';
+import 'package:UdemyClone/Screens/LearningScreen.dart';
 import 'package:UdemyClone/Screens/SignInOptions/Login_Screen.dart';
 import 'package:UdemyClone/Services/PrefStorage.dart';
 import 'package:UdemyClone/blocs/CartBloc.dart';
+import 'package:UdemyClone/blocs/ContentCourseBloc.dart';
 import 'package:UdemyClone/blocs/CoursesBloc.dart';
 import 'package:UdemyClone/blocs/GirdCourseBloc.dart';
 import 'package:UdemyClone/states/CourseState.dart';
@@ -49,9 +51,13 @@ class MyApp extends StatelessWidget {
             ),
             BlocProvider<GridCoursesBloc>(
               create: (BuildContext context) => GridCoursesBloc(),
+            ),
+            BlocProvider<ContentCourseBloc>(
+              create: (BuildContext context) => ContentCourseBloc(),
             )
+
           ],
-          child: LoginScreen(),
+          child: LearningScreen(),
         )
       //home: WishList(),
     );

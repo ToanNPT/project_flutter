@@ -3,10 +3,17 @@ import 'package:flutter/material.dart';
 
 class LectureItem extends StatelessWidget {
   final List<Lecture> lectures;
-  num currentLectureId = 0;
+  final Function handleCurrentVideo;
+  num currentLectureId;
+  num currentChapterId;
 
-  LectureItem({Key key, this.lectures}) : super(key: key);
-
+  LectureItem(
+      {Key key,
+      this.lectures,
+      this.handleCurrentVideo,
+      this.currentChapterId,
+      this.currentLectureId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,23 +23,31 @@ class LectureItem extends StatelessWidget {
       itemBuilder: (BuildContext context, index) {
         return GestureDetector(
             onTap: () {
-              currentLectureId = lectures[index].id;
+              handleCurrentVideo(lectures[index].chapterId, lectures[index].id);
             },
             child: Container(
-              padding: EdgeInsets.only(left: 16),
-              height: 50,
-              width: MediaQuery.of(context).size.width - 20,
-              child: ListTile(
-                contentPadding: EdgeInsets.symmetric(vertical: 5, horizontal: 1),
-                leading: Icon(
-                  currentLectureId == lectures[index].id ? Icons.pause_circle: Icons.play_circle,
-                  color: Colors.blue,),
-                title: Text(
-                  "${lectures[index].title}",
-                  style: TextStyle(color: Colors.white),
-                ),
-              )
-            ));
+                padding: EdgeInsets.only(left: 16),
+                height: 50,
+                width: MediaQuery.of(context).size.width - 20,
+                child: ListTile(
+                  contentPadding:
+                      EdgeInsets.symmetric(vertical: 5, horizontal: 1),
+                  leading: Icon(
+                    currentLectureId == lectures[index].id
+                        ? Icons.pause_circle
+                        : Icons.play_circle,
+                    color: Colors.tealAccent,
+                  ),
+                  title: Text(
+                    "${lectures[index].title}",
+                    style: TextStyle(
+                        color: currentLectureId == lectures[index].id
+                            ? Colors.teal
+                            : Colors.white,
+                      fontWeight: FontWeight.w500
+                    ),
+                  ),
+                )));
       },
     );
   }

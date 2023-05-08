@@ -22,6 +22,13 @@ class _LearningScreenState extends State<LearningScreen> {
   List<CoursePaid> chapters;
   ContentCourseBloc contentCourseBloc;
 
+  void handleSetCurrentVideo (int chapterId, int lectureId){
+    setState(() {
+      this.currentChapterId = chapterId;
+      this.currentVideoId = lectureId;
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -73,6 +80,8 @@ class _LearningScreenState extends State<LearningScreen> {
                     Navigator.pop(context);
                     setState(() {
                       chapters = state.contentCourse;
+                      currentChapterId = state.contentCourse != null ?state.contentCourse[0].id : 0;
+                      currentVideoId = state.contentCourse != null ?state.contentCourse[0].lectures[0].id : 0;
                     });
                   } else if (state is ContentCourseLoadingState) {
                     showDialog(
@@ -141,7 +150,6 @@ class _LearningScreenState extends State<LearningScreen> {
                                   return Padding(
                                     padding: EdgeInsets.all(5),
                                     child: ExpansionTile(
-
                                       shape: RoundedRectangleBorder(
                                         //<-- SEE HERE
                                           side: BorderSide(
@@ -152,18 +160,23 @@ class _LearningScreenState extends State<LearningScreen> {
                                       title: Text(
                                         "Section ${index}: ${chapters[index].chapterName}",
                                         style: TextStyle(
-                                            color: currentChapterId == index
-                                                ? Colors.orange
+                                            color: currentChapterId == chapters[index].id
+                                                ? Colors.teal
                                                 : Colors.white,
                                             fontWeight:
-                                            currentChapterId == index
+                                            currentChapterId == chapters[index].id
                                                 ? FontWeight.bold
-                                                : FontWeight.w400),
+                                                : FontWeight.w500),
                                       ),
                                       initiallyExpanded: false,
                                       textColor: Colors.white,
                                       children: [
-                                        LectureItem(lectures: chapters[index].lectures),
+                                        LectureItem(
+                                          lectures: chapters[index].lectures,
+                                          handleCurrentVideo: handleSetCurrentVideo,
+                                          currentChapterId: currentChapterId,
+                                          currentLectureId: currentVideoId,
+                                        ),
                                       ],
                                     ),
                                   );

@@ -19,13 +19,22 @@ class _LearningScreenState extends State<LearningScreen> {
   ChewieController chewieController;
   int currentChapterId;
   int currentVideoId;
+  String currentLectureName;
+  String desc;
   List<CoursePaid> chapters;
   ContentCourseBloc contentCourseBloc;
 
-  void handleSetCurrentVideo (int chapterId, int lectureId){
+  void handleSetCurrentVideo(
+      int chapterId, int lectureId, String lecturename, String desc, String url) {
     setState(() {
       this.currentChapterId = chapterId;
       this.currentVideoId = lectureId;
+      this.currentLectureName = lecturename;
+      this.desc = desc;
+      videoPlayerController.dispose();
+      chewieController.dispose();
+      chewieController = null;
+      _initPlayer(url);
     });
   }
 
@@ -35,10 +44,10 @@ class _LearningScreenState extends State<LearningScreen> {
     currentChapterId = 0;
     currentVideoId = 0;
     contentCourseBloc = BlocProvider.of<ContentCourseBloc>(context);
+    currentLectureName = "";
+    desc = "Sorry, but your teacher don't describe anything for this lecture!";
     context.read<ContentCourseBloc>().add(GetContentCourse(courseId: "COU013"));
-    _initPlayer();
     super.initState();
-    setState(() {});
   }
 
   @override
@@ -50,26 +59,41 @@ class _LearningScreenState extends State<LearningScreen> {
     chewieController.dispose();
   }
 
-  void _initPlayer() async {
-    videoPlayerController = VideoPlayerController.network(
-        'https://toannpt-onlinecourses.s3.amazonaws.com/toanpt01-C_01-11-Testoot%20fast%20and%20deep%3F11ss');
+  void _initPlayer(String url) async {
+    videoPlayerController = VideoPlayerController.network(url);
     await videoPlayerController.initialize();
+
     setState(() {
       chewieController = chewieController = ChewieController(
         videoPlayerController: videoPlayerController,
         autoPlay: true,
-        looping: true,
+        playbackSpeeds: [0.25, 0.5, 1, 2],
+        looping: false,
       );
     });
   }
 
+  String getFirstUrl(List<CoursePaid> chapters) {
+    var lecs = chapters
+        .where((element) => element.lectures != null)
+        .expand((element) => element.lectures)
+        .toList();
+    return lecs.where((element) => element.link != null).toList()[0].link;
+  }
+
   @override
   Widget build(BuildContext context) {
+    num tabHeight = MediaQuery.of(context).size.width * 16 / 9;
+
     return Scaffold(
         backgroundColor: Colors.black,
         appBar: AppBar(
           backgroundColor: Colors.black,
-          title: Text("Udemy Learning"),
+          toolbarHeight: 40,
+          title: Text(
+            "Learning Room",
+            style: TextStyle(fontSize: 16),
+          ),
         ),
         body: MultiBlocListener(
           listeners: [
@@ -80,8 +104,17 @@ class _LearningScreenState extends State<LearningScreen> {
                     Navigator.pop(context);
                     setState(() {
                       chapters = state.contentCourse;
-                      currentChapterId = state.contentCourse != null ?state.contentCourse[0].id : 0;
-                      currentVideoId = state.contentCourse != null ?state.contentCourse[0].lectures[0].id : 0;
+                      currentChapterId = state.contentCourse != null
+                          ? state.contentCourse[0].id
+                          : 0;
+                      currentVideoId = state.contentCourse != null
+                          ? state.contentCourse[0].lectures[0].id
+                          : 0;
+                      currentLectureName = state.contentCourse != null
+                          ? state.contentCourse[0].lectures[0].title
+                          : "";
+                      String url = getFirstUrl(state.contentCourse);
+                      _initPlayer(url);
                     });
                   } else if (state is ContentCourseLoadingState) {
                     showDialog(
@@ -96,14 +129,9 @@ class _LearningScreenState extends State<LearningScreen> {
                   }
                 })
           ],
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.start,
+          child: SingleChildScrollView(
+              child: Column(
             children: [
-              // AspectRatio(
-              //     aspectRatio: 4/3,
-              //     child: Chewie(
-              //       controller: chewieController,
-              //     )),
               chewieController != null
                   ? AspectRatio(
                       aspectRatio: 16 / 9,
@@ -111,17 +139,56 @@ class _LearningScreenState extends State<LearningScreen> {
                         controller: chewieController,
                       ))
                   : AspectRatio(
-                      aspectRatio: 5,
-                      child: Center(
-                        child: CircularProgressIndicator(),
-                      ),
+                      aspectRatio: 16 / 9,
+                      child: Container(
+                        color: Colors.black,
+                        child: Container(
+                          child: Center(
+                            child: Text(
+                              "Loading...",
+                              style: TextStyle(color: Colors.white70),
+                            ),
+                          ),
+                        ),
+                      )),
+              Container(
+                padding: EdgeInsets.only(left: 0, top: 10, bottom: 10),
+                margin: EdgeInsets.symmetric(horizontal: 0),
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                    color: Colors.white10,
+                    border: Border.all(color: Colors.black12),
+                    borderRadius: BorderRadius.all(Radius.circular(10))),
+                child: Padding(
+                  padding: EdgeInsets.only(top: 5),
+                  child: ExpansionTile(
+                    title: Text(
+                      "Lecture: $currentLectureName",
+                      style: TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w500),
+                      maxLines: 2,
                     ),
+                    trailing: const SizedBox(),
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.all(10),
+                        child: Text(
+                          "$desc",
+                          style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.w400),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ),
               DefaultTabController(
                   length: 2,
                   initialIndex: 0,
                   animationDuration: Duration(milliseconds: 500),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       SingleChildScrollView(
                         padding: EdgeInsets.only(left: 6, right: 6),
@@ -137,34 +204,35 @@ class _LearningScreenState extends State<LearningScreen> {
                           ],
                         ),
                       ),
-
                       Container(
-                        height: 300,
+                        height: tabHeight - 275 - 93,
                         margin: EdgeInsets.only(bottom: 20),
                         child: TabBarView(
                           children: [
                             ListView.builder(
-                                itemCount: chapters != null ? chapters.length : 0,
+                                itemCount:
+                                    chapters != null ? chapters.length : 0,
                                 shrinkWrap: true,
                                 itemBuilder: (BuildContext context, index) {
                                   return Padding(
                                     padding: EdgeInsets.all(5),
                                     child: ExpansionTile(
                                       shape: RoundedRectangleBorder(
-                                        //<-- SEE HERE
+                                          //<-- SEE HERE
                                           side: BorderSide(
                                             color: Colors.grey,
                                           ),
                                           borderRadius:
-                                          BorderRadius.circular(8)),
+                                              BorderRadius.circular(8)),
                                       title: Text(
                                         "Section ${index}: ${chapters[index].chapterName}",
                                         style: TextStyle(
-                                            color: currentChapterId == chapters[index].id
+                                            color: currentChapterId ==
+                                                    chapters[index].id
                                                 ? Colors.teal
                                                 : Colors.white,
-                                            fontWeight:
-                                            currentChapterId == chapters[index].id
+                                            fontWeight: currentChapterId ==
+                                                    chapters[index].id
                                                 ? FontWeight.bold
                                                 : FontWeight.w500),
                                       ),
@@ -173,7 +241,8 @@ class _LearningScreenState extends State<LearningScreen> {
                                       children: [
                                         LectureItem(
                                           lectures: chapters[index].lectures,
-                                          handleCurrentVideo: handleSetCurrentVideo,
+                                          handleCurrentVideo:
+                                              handleSetCurrentVideo,
                                           currentChapterId: currentChapterId,
                                           currentLectureId: currentVideoId,
                                         ),
@@ -190,7 +259,7 @@ class _LearningScreenState extends State<LearningScreen> {
                     ],
                   )),
             ],
-          ),
+          )),
         ));
   }
 }

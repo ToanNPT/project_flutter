@@ -23,7 +23,12 @@ class LectureItem extends StatelessWidget {
       itemBuilder: (BuildContext context, index) {
         return GestureDetector(
             onTap: () {
-              handleCurrentVideo(lectures[index].chapterId, lectures[index].id);
+              handleCurrentVideo(
+                  lectures[index].chapterId,
+                  lectures[index].id,
+                  lectures[index].title,
+                  lectures[index].description,
+                  lectures[index].link);
             },
             child: Container(
                 padding: EdgeInsets.only(left: 16),
@@ -44,8 +49,7 @@ class LectureItem extends StatelessWidget {
                         color: currentLectureId == lectures[index].id
                             ? Colors.teal
                             : Colors.white,
-                      fontWeight: FontWeight.w500
-                    ),
+                        fontWeight: FontWeight.w500),
                   ),
                 )));
       },

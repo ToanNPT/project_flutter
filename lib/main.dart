@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
             )
 
           ],
-          child: LearningScreen(),
+          child: LoginScreen(),
         )
       //home: WishList(),
     );

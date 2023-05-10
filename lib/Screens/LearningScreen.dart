@@ -4,6 +4,8 @@ import 'package:UdemyClone/widgets/LectureItem.dart';
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:video_player/video_player.dart';
 
 import '../events/ContentCourseEvent.dart';
@@ -20,6 +22,7 @@ class _LearningScreenState extends State<LearningScreen> {
   int currentChapterId;
   int currentVideoId;
   String currentLectureName;
+  String courseId;
   String desc;
   List<CoursePaid> chapters;
   ContentCourseBloc contentCourseBloc;
@@ -41,12 +44,13 @@ class _LearningScreenState extends State<LearningScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    courseId = Get.arguments;
     currentChapterId = 0;
     currentVideoId = 0;
     contentCourseBloc = BlocProvider.of<ContentCourseBloc>(context);
     currentLectureName = "";
     desc = "Sorry, but your teacher don't describe anything for this lecture!";
-    context.read<ContentCourseBloc>().add(GetContentCourse(courseId: "COU013"));
+    context.read<ContentCourseBloc>().add(GetContentCourse(courseId: courseId));
     super.initState();
   }
 

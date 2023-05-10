@@ -1,3 +1,5 @@
+import 'package:UdemyClone/Screens/LearningScreen.dart';
+import 'package:UdemyClone/blocs/ContentCourseBloc.dart';
 import 'package:UdemyClone/blocs/ReviewCourseBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -48,23 +50,17 @@ class MyCourseCard extends StatelessWidget {
         Get.to(
           MultiBlocProvider(
             providers: [
-              BlocProvider<WishListBloc>(
-                create: (BuildContext context) => WishListBloc(),
-              ),
-              BlocProvider<CartBloc>(
-                create: (BuildContext context) => CartBloc(),
-              ),
-              BlocProvider<ReviewCourseBloc>(
-                create: (BuildContext context) => ReviewCourseBloc(),
-              ),
+              BlocProvider<ContentCourseBloc>(
+                create: (BuildContext context) => ContentCourseBloc(),
+              )
             ],
             child: ChangeNotifierProvider(
               create: (context) => CartItemsCount(),
-              child: DetailsScreen(),
+              child: LearningScreen(),
             ),
           ),
           //transition: Transition.rightToLeftWithFade,
-          arguments: course,
+          arguments: course.id,
         );
       },
       child: Container(

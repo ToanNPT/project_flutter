@@ -22,12 +22,6 @@ class RegisterBloc {
   Future<bool> register(RegisterPayload payload) async {
     try {
       _loadingController.sink.add(true);
-      // await _authenRepository.login(payload);
-      // if (authUser != null) {
-      //   await storageRepository.writeSecureData(Constants.ACCESS_TOKEN_KEY, authUser.token);
-      //   print("ACCESS TOKEN STORED: " + await storageRepository.readSecureData(Constants.ACCESS_TOKEN_KEY));
-      //   return true;
-      // }
       return registerRepository.register(payload);
     } catch (error) {
       return false;

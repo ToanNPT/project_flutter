@@ -19,20 +19,6 @@ class RegisterRepository {
       'email' : payload.email,
       'phone' : payload.phone
     };
-    // String encodedFormData = formData.keys.map((key) => '$key=${formData[key]}').join('&');
-    // Response response = await post(
-    //     Uri.parse(userUrl),
-    //     body: encodedFormData,
-    //     headers: {"Accept": "application/json;charset=utf-8", "Content-Type": "application/json"},
-    // );
-    //
-    // if (response.statusCode == 200) {
-    //   print("register successful");
-    //   return true;
-    // } else {
-    //   print("from repository: " + response.reasonPhrase);
-    //   return false;
-    // }
     var request = http.MultipartRequest('POST', Uri.parse(userUrl));
 
 // Add the form fields to the request

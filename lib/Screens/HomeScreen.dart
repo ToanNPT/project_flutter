@@ -89,7 +89,23 @@ class _HomeScreenState extends State<HomeScreen> {
           //     child: WishList(),
           //   ),
           // ),
-          Account(),
+          MultiBlocProvider(
+            providers: [
+              BlocProvider<WishListBloc>(
+                create: (BuildContext context) => WishListBloc(),
+              ),
+              BlocProvider<CartBloc>(
+                create: (BuildContext context) => CartBloc(),
+              ),
+              BlocProvider<ReviewCourseBloc>(
+                create: (BuildContext context) => ReviewCourseBloc(),
+              ),
+            ],
+            child: ChangeNotifierProvider(
+              create: (context) => CartItemsCount(),
+              child: Account(),
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(

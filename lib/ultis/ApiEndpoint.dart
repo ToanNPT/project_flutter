@@ -9,3 +9,4 @@ const String WISHLIST = DOMAIN + "wishlist";
 const String CART = DOMAIN + "cart";
 const String COURSE_REVIEWS_ENDPOINT = DOMAIN + 'reviews/course/';
 const String REGISTER_ENDPOINT = DOMAIN +'account/users/register';
+const String GET_DETAIL_USER = DOMAIN + 'account/detail/';

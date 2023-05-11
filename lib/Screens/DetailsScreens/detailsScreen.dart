@@ -151,24 +151,6 @@ class _DetailsScreenState extends State<DetailsScreen> {
         ),
         body: MultiBlocListener(
           listeners: [
-            // BlocListener<ReviewCourseBloc, ReviewState>(
-            //   bloc: reviewCourseBloc,
-            //   listener: (context, state) {
-            //     if (state is ReviewInitState) {
-            //       context
-            //           .read<ReviewCourseBloc>()
-            //           .add(GetReviewOfCourseEvent(course.id));
-            //     } else if (state is ReviewCourseLoadingState) {
-            //       return Center(
-            //         child: CircularProgressIndicator(),
-            //       );
-            //     } else if (state is ReviewLoadedState){
-            //       setState(() {
-            //         this.reviews = state.reviews;
-            //       });
-            //     }
-            //   },
-            // ),
             BlocListener<WishListBloc, WishListState>(
               bloc: wishListBloc,
               listener: (context, state) {

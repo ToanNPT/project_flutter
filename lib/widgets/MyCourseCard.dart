@@ -1,14 +1,10 @@
 import 'package:UdemyClone/Screens/LearningScreen.dart';
 import 'package:UdemyClone/blocs/ContentCourseBloc.dart';
-import 'package:UdemyClone/blocs/ReviewCourseBloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
-import '../Screens/DetailsScreens/DetailsScreen.dart';
-import '../blocs/CartBloc.dart';
-import '../blocs/WishListBloc.dart';
 import '../models/Course.dart';
 import '../notficationProvider/CartNotification.dart';
 

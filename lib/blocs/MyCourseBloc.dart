@@ -1,6 +1,5 @@
 import 'package:UdemyClone/events/MyCourseEvent.dart';
 import 'package:UdemyClone/repository/CouresPaidRepository.dart';
-import 'package:UdemyClone/repository/CourseRepository.dart';
 import 'package:UdemyClone/states/MyCourseState.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

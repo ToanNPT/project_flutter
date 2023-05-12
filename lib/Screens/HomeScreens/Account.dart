@@ -1,13 +1,19 @@
-import 'package:UdemyClone/Screens/HomeScreen.dart';
 import 'package:UdemyClone/Screens/HomeScreens/MyList.dart';
-import 'package:UdemyClone/Screens/landingPage.dart';
-import 'package:UdemyClone/Services/Authentication.dart';
-import 'package:UdemyClone/Services/PrefStorage.dart';
+import 'package:UdemyClone/Screens/HomeScreens/WishList.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 import 'package:page_transition/page_transition.dart';
+import 'package:provider/provider.dart';
+
+import '../../blocs/CartBloc.dart';
+import '../../blocs/ContentCourseBloc.dart';
+import '../../blocs/ReviewCourseBloc.dart';
+import '../../blocs/WishListBloc.dart';
+import '../../notficationProvider/CartNotification.dart';
+import '../ChangePasswordScreen.dart';
 
 class Account extends StatefulWidget {
   @override
@@ -15,9 +21,6 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
-  Authentication authentication = Authentication();
-  final PrefStorage prefStorage = PrefStorage();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +62,7 @@ class _AccountState extends State<Account> {
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10.0),
                     child: Text(
-                      prefStorage.getUserInfo('name'),
+                      "ToanNPT",
                       style: TextStyle(fontSize: 24.0, color: Colors.white),
                     ),
                   ),
@@ -74,7 +77,7 @@ class _AccountState extends State<Account> {
                         width: 5.0,
                       ),
                       Text(
-                        prefStorage.getUserInfo('email'),
+                        "toanpt08102001@gmail.com",
                         style: TextStyle(fontSize: 18.0, color: Colors.grey),
                       ),
                     ],
@@ -107,7 +110,7 @@ class _AccountState extends State<Account> {
             ),
             ListTile(
               title: Text(
-                "Download Options",
+                "Account Info",
                 style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
@@ -120,7 +123,7 @@ class _AccountState extends State<Account> {
             ),
             ListTile(
               title: Text(
-                "Video Playback Options",
+                "Change Your Password",
                 style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
@@ -130,20 +133,13 @@ class _AccountState extends State<Account> {
                 Icons.arrow_forward_ios,
                 color: Colors.grey,
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 15.0),
-              child: Text(
-                "Account Settings",
-                style: TextStyle(
-                  fontSize: 15.0,
-                  color: Colors.grey,
-                ),
-              ),
+              onTap: (){
+                Get.to(ChangPasswordScreen());
+              },
             ),
             ListTile(
               title: Text(
-                "Account Security",
+                "Your Course In Udemy",
                 style: TextStyle(
                   fontSize: 20.0,
                   color: Colors.white,
@@ -153,62 +149,27 @@ class _AccountState extends State<Account> {
                 Icons.arrow_forward_ios,
                 color: Colors.grey,
               ),
-            ),
-            ListTile(
-              title: Text(
-                "Email Notification Preferences",
-                style: TextStyle(
-                  fontSize: 20.0,
-                  color: Colors.white,
-                ),
-              ),
-              trailing: Icon(
-                Icons.arrow_forward_ios,
-                color: Colors.grey,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(left: 15.0, bottom: 20.0),
-              child: Container(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      "Learning Reminders",
-                      style: TextStyle(
-                        fontSize: 20.0,
-                        color: Colors.white,
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 110.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5.0),
-                          color: Colors.greenAccent,
+              onTap: (){
+                Get.to(
+                    MultiBlocProvider(
+                      providers: [
+                        BlocProvider<WishListBloc>(
+                          create: (BuildContext context) => WishListBloc(),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(3.0),
-                          child: Text(
-                            "New",
-                            style: TextStyle(
-                              fontSize: 17.0,
-                              color: Colors.black,
-                            ),
-                          ),
+                        BlocProvider<CartBloc>(
+                          create: (BuildContext context) => CartBloc(),
                         ),
+                        BlocProvider<ReviewCourseBloc>(
+                          create: (BuildContext context) => ReviewCourseBloc(),
+                        ),
+                      ],
+                      child: ChangeNotifierProvider(
+                        create: (context) => CartItemsCount(),
+                        child: WishList(),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 15.0, top: 20.0),
-                      child: Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+                    )
+                );
+              },
             ),
             Padding(
               padding: const EdgeInsets.only(left: 15.0),
@@ -299,29 +260,7 @@ class _AccountState extends State<Account> {
               padding: const EdgeInsets.only(top: 10.0),
               child: Center(
                 child: MaterialButton(
-                  onPressed: () async {
-                    await EasyLoading.show(
-                      status: "Signing out",
-                      maskType: EasyLoadingMaskType.black,
-                    );
-                    await authentication
-                        .signOut()
-                        .whenComplete(
-                          () async => {
-                            await prefStorage.deleteUserInfo('email', 'name'),
-                          },
-                        )
-                        .whenComplete(() => {
-                              Navigator.pushReplacement(
-                                context,
-                                PageTransition(
-                                  child: LandingPage(),
-                                  type: PageTransitionType.leftToRightWithFade,
-                                ),
-                              )
-                            });
-                    await EasyLoading.dismiss();
-                  },
+                  onPressed: () async {},
                   child: Text(
                     "Sign Out",
                     style: TextStyle(

@@ -1,13 +1,10 @@
 import 'dart:convert';
 
-import 'package:UdemyClone/models/Course.dart';
-import 'package:UdemyClone/models/PagingData.dart';
 import 'package:UdemyClone/models/WishListModel.dart';
 import 'package:UdemyClone/repository/StorageRepository.dart';
 import 'package:UdemyClone/ultis/ApiEndpoint.dart' as ApiConst;
-import 'package:http/http.dart';
-import 'package:supercharged/supercharged.dart';
 import 'package:UdemyClone/ultis/constants.dart' as Constants;
+import 'package:http/http.dart';
 class WishListRepository {
   StorageRepository storageRepository;
 
@@ -43,7 +40,9 @@ class WishListRepository {
 
     Response response = await delete(
         Uri.parse(ApiConst.WISHLIST +"/" + id.toString()),
-        headers: {"Accept": "application/json;charset=utf-8",  "Authorization": "Bearer " + token}
+        headers: {"Accept": "application/json;charset=utf-8",
+          "Authorization": "Bearer " + token
+        }
     );
 
     if (response.statusCode == 200) {

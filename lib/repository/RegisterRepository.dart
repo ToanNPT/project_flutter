@@ -30,7 +30,8 @@ class RegisterRepository {
 // Send the POST request with the form data
     http.Response response = await http.Response.fromStream(await request.send());
 
-    if (response.statusCode == 200) {
+    var a = jsonDecode(response.body);
+    if (a["errorCode"] == "") {
       // Success
       print('Data submitted successfully!');
       return true;

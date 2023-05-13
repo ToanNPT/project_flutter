@@ -1,6 +1,9 @@
 import 'package:UdemyClone/blocs/RegisterBloc.dart';
 import 'package:UdemyClone/models/RegisterPayload.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 import '../../Core/Animation/Fade_Animation.dart';
 import '../../Core/Colors/Hex_Color.dart';
@@ -329,40 +332,12 @@ class _SignupScreenState extends State<SignupScreen> {
                                   : backgroundColor,
                             ),
                             padding: const EdgeInsets.all(5.0),
-                            child: TextField(
-                              controller: _getTextEditingController("birthdate"),
-                              onTap: () {
-                                setState(() {
-                                  selected = FormData.BirthDate;
-                                });
-                              },
-                              decoration: InputDecoration(
-                                enabledBorder: InputBorder.none,
-                                border: InputBorder.none,
-                                prefixIcon: Icon(
-                                  Icons.email_outlined,
-                                  color: selected == FormData.BirthDate
-                                      ? enabledtxt
-                                      : deaible,
-                                  size: 20,
-                                ),
-                                hintText: 'BirthDate'
-                                    ''
-                                    '',
-                                hintStyle: TextStyle(
-                                    color: selected == FormData.BirthDate
-                                        ? enabledtxt
-                                        : deaible,
-                                    fontSize: 12),
-                              ),
-                              textAlignVertical: TextAlignVertical.center,
-                              style: TextStyle(
-                                  color: selected == FormData.BirthDate
-                                      ? enabledtxt
-                                      : deaible,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 12),
-                            ),
+                            child: Row(
+                              children: [
+                                Text("Birth date"),
+                                Text("DDD")
+                              ],
+                            )
                           ),
                         ),
                         const SizedBox(
@@ -603,58 +578,38 @@ class _SignupScreenState extends State<SignupScreen> {
                                         final res = await _registerBloc.register(
                                             new RegisterPayload(
                                                 username, password,fullname,birthdate,gender,email,phone));
+                                        showDialog(
+                                          context: context,
+                                          barrierDismissible: false,
+                                          builder: (BuildContext context) {
+                                            return Center(
+                                              child: CircularProgressIndicator(),
+                                            );
+                                          },
+                                        );
                                         if (res) {
-                                          return showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) =>
-                                                  AlertDialog(
-                                                    title: Text('Register Successful'),
-                                                    content: Text(
-                                                        'You can login to continue'),
-                                                    actions: <Widget>[
-                                                      TextButton(
-                                                        child: Text('CANCEL'),
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                      ),
-                                                      TextButton(
-                                                        child: Text('OK'),
-                                                        onPressed: () {
-                                                          // Do something here
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ));
+                                          Navigator.pop(context);
+                                          AwesomeDialog(
+                                            context: context,
+                                            dialogType: DialogType.success,
+                                            animType: AnimType.scale,
+                                            title: 'Success',
+                                            desc: 'Register Account Success, Click to Login',
+                                            btnOkOnPress: () {
+                                              Get.to(
+                                                LoginScreen()
+                                              );
+                                            },
+                                          )..show();
                                         } else {
-                                          return showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) =>
-                                                  AlertDialog(
-                                                    title: Text('Register Fail'),
-                                                    content: Text(
-                                                        'Something was wrong'),
-                                                    actions: <Widget>[
-                                                      TextButton(
-                                                        child: Text('CANCEL'),
-                                                        onPressed: () {
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                      ),
-                                                      TextButton(
-                                                        child: Text('OK'),
-                                                        onPressed: () {
-                                                          // Do something here
-                                                          Navigator.of(context)
-                                                              .pop();
-                                                        },
-                                                      ),
-                                                    ],
-                                                  ));
+                                          AwesomeDialog(
+                                            context: context,
+                                            dialogType: DialogType.error,
+                                            animType: AnimType.scale,
+                                            title: 'Error',
+                                            desc: 'Oop! Try again, something was wrong',
+                                            btnOkOnPress: () {},
+                                          )..show();
                                         }
                                       },
                                       child: Text(

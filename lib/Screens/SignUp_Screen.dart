@@ -332,12 +332,40 @@ class _SignupScreenState extends State<SignupScreen> {
                                   : backgroundColor,
                             ),
                             padding: const EdgeInsets.all(5.0),
-                            child: Row(
-                              children: [
-                                Text("Birth date"),
-                                Text("DDD")
-                              ],
-                            )
+                            child: TextField(
+                              controller: _getTextEditingController("birthdate"),
+                              onTap: () {
+                                setState(() {
+                                  selected = FormData.BirthDate;
+                                });
+                              },
+                              decoration: InputDecoration(
+                                enabledBorder: InputBorder.none,
+                                border: InputBorder.none,
+                                prefixIcon: Icon(
+                                  Icons.calendar_month,
+                                  color: selected == FormData.BirthDate
+                                      ? enabledtxt
+                                      : deaible,
+                                  size: 20,
+                                ),
+                                hintText: 'BirthDate'
+                                    ''
+                                    '',
+                                hintStyle: TextStyle(
+                                    color: selected == FormData.BirthDate
+                                        ? enabledtxt
+                                        : deaible,
+                                    fontSize: 12),
+                              ),
+                              textAlignVertical: TextAlignVertical.center,
+                              style: TextStyle(
+                                  color: selected == FormData.BirthDate
+                                      ? enabledtxt
+                                      : deaible,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 12),
+                            ),
                           ),
                         ),
                         const SizedBox(
@@ -366,7 +394,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                 enabledBorder: InputBorder.none,
                                 border: InputBorder.none,
                                 prefixIcon: Icon(
-                                  Icons.email_outlined,
+                                  Icons.person,
                                   color: selected == FormData.Gender
                                       ? enabledtxt
                                       : deaible,
@@ -471,7 +499,7 @@ class _SignupScreenState extends State<SignupScreen> {
                                     : backgroundColor),
                             padding: const EdgeInsets.all(5.0),
                             child: TextField(
-                              controller: confirmPasswordController,
+                              controller: _getTextEditingController("confirmpass"),
                               onTap: () {
                                 setState(() {
                                   selected = FormData.ConfirmPassword;
@@ -549,6 +577,11 @@ class _SignupScreenState extends State<SignupScreen> {
                                             "password")
                                             .text
                                             .toString();
+                                        final confirmpassword =
+                                        _getTextEditingController(
+                                            "confirmpass")
+                                            .text
+                                            .toString();
                                         final fullname =
                                         _getTextEditingController(
                                             "fullname")
@@ -574,7 +607,43 @@ class _SignupScreenState extends State<SignupScreen> {
                                             "phone")
                                             .text
                                             .toString();
-
+                                        if (password!=confirmpassword) {
+                                          return showDialog(
+                                              context: context,
+                                              builder: (BuildContext context) =>
+                                                  AlertDialog(
+                                                    title: Column(
+                                                      children: [
+                                                        Column(
+                                                          children: [
+                                                            Icon(Icons.warning, color: Colors.yellow),
+                                                            SizedBox(width: 8),
+                                                            Text('Password and Confirm Password not match',textAlign: TextAlign.center,),
+                                                          ],
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    content: Text(
+                                                        'Please check again!!!',textAlign: TextAlign.center,),
+                                                    actions: <Widget>[
+                                                      TextButton(
+                                                        child: Text('CANCEL'),
+                                                        onPressed: () {
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      ),
+                                                      TextButton(
+                                                        child: Text('OK'),
+                                                        onPressed: () {
+                                                          // Do something here
+                                                          Navigator.of(context)
+                                                              .pop();
+                                                        },
+                                                      ),
+                                                    ],
+                                                  ));
+                                        }
                                         final res = await _registerBloc.register(
                                             new RegisterPayload(
                                                 username, password,fullname,birthdate,gender,email,phone));

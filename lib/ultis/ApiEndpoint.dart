@@ -11,3 +11,5 @@ const String CART = DOMAIN + "cart";
 const String COURSE_REVIEWS_ENDPOINT = DOMAIN + 'reviews/course/';
 const String CONTENT_COURSE = DOMAIN + "courses/";
 const String COURSE_PAIS = DOMAIN + "listPurchasedCourses/";
+const String REGISTER_ENDPOINT = DOMAIN +'account/users/register';
+const String GET_DETAIL_USER = DOMAIN + 'account/detail/';

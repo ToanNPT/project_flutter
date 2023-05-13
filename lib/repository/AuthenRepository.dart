@@ -14,7 +14,6 @@ class AuthenRepository {
   StorageRepository storageRepository = new StorageRepository();
 
   Future<AuthUser> login(LoginPayload payload) async {
-    final p = payload.toJson();
     Response response = await post(
       Uri.parse(userUrl),
 

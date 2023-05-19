@@ -4,7 +4,7 @@ import 'package:UdemyClone/states/UserDetailState.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class Account extends StatelessWidget {
+class AccountInfo extends StatelessWidget {
 
 
   @override

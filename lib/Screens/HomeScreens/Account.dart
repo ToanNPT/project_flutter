@@ -1,3 +1,4 @@
+import 'package:UdemyClone/Screens/HomeScreens/AccountInfo.dart';
 import 'package:UdemyClone/Screens/HomeScreens/MyList.dart';
 import 'package:UdemyClone/Screens/HomeScreens/WishList.dart';
 import 'package:eva_icons_flutter/eva_icons_flutter.dart';
@@ -120,6 +121,9 @@ class _AccountState extends State<Account> {
                 Icons.arrow_forward_ios,
                 color: Colors.grey,
               ),
+              onTap: (){
+                Get.to(AccountInfo());
+              },
             ),
             ListTile(
               title: Text(

@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:UdemyClone/blocs/CartBloc.dart';
 import 'package:UdemyClone/blocs/ReviewCourseBloc.dart';
 import 'package:UdemyClone/blocs/WishListBloc.dart';
+import 'package:UdemyClone/repository/StorageRepository.dart';
 import 'package:UdemyClone/states/CartState.dart';
 import 'package:UdemyClone/widgets/SlidableCartItem.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -8,12 +11,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'package:supercharged/supercharged.dart';
-
+import 'package:UdemyClone/ultis/constants.dart' as Constants;
 import '../../events/CartEvent.dart';
 import '../../models/Course.dart';
 import '../../notficationProvider/CartNotification.dart';
 import '../DetailsScreens/DetailsScreen.dart';
+import 'package:http/http.dart';
+import 'package:UdemyClone/ultis/ApiEndpoint.dart' as ApiConst;
 
 class MyList extends StatefulWidget {
   @override
@@ -23,10 +27,12 @@ class MyList extends StatefulWidget {
 class _MyListState extends State<MyList> {
   CartBloc cartBloc;
   List<Course> courseList;
+  StorageRepository storageRepository;
 
   @override
   void initState() {
     super.initState();
+    storageRepository = new StorageRepository();
     cartBloc = BlocProvider.of<CartBloc>(context);
     cartBloc.add(GetCartItemsEvent());
   }
@@ -39,6 +45,60 @@ class _MyListState extends State<MyList> {
 
   void _onDeleteItem(String courseId) {
     context.read<CartBloc>().add(CartDeletedItemEvent(id: courseId));
+  }
+
+  void _onSubmit() async{
+    List<String> ids = courseList.map((e) => e.id).toList();
+    String token =
+        await storageRepository.readSecureData(Constants.ACCESS_TOKEN_KEY);
+    if (token.isEmpty) throw Exception("must login");
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+
+    var response = await get(
+        Uri.parse(ApiConst.DOMAIN + "order?courses=" + ids.join(',')),
+        headers: {
+          "Accept": "application/json;charset=utf-8",
+          "Authorization": "Bearer " + token
+        });
+
+    if (response.statusCode == 200) {
+      var code = jsonDecode(response.body)["errorCode"];
+      Navigator.pop(context);
+      if(code == ""){
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.success,
+          animType: AnimType.scale,
+          title: 'Success',
+          desc: 'Pay succes this course',
+          btnOkOnPress: () {},
+        )..show();
+        setState(() {
+          courseList = null;
+        });
+      }else{
+        AwesomeDialog(
+          context: context,
+          dialogType: DialogType.error,
+          animType: AnimType.scale,
+          title: 'Error',
+          desc: 'Oop! Try again, something was wrong',
+          btnOkOnPress: () {},
+        )..show();
+      }
+    } else {
+      print("from repository: " + response.reasonPhrase);
+      throw Exception(response.reasonPhrase);
+    }
   }
 
   @override
@@ -170,7 +230,7 @@ class _MyListState extends State<MyList> {
                         margin: EdgeInsets.only(top: 5),
                         child: GestureDetector(
                           onTap: () {
-                            setState(() {});
+                            _onSubmit();
                           },
                           child: Container(
                             margin: EdgeInsets.only(top: 16, bottom: 0),

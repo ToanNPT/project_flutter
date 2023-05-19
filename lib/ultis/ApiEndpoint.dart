@@ -1,5 +1,5 @@
 //const String DOMAIN = 'http://10.10.10.110:8080/api/v1/';
-const String DOMAIN = 'http://10.0.2.2:8080/api/v1/';
+const String DOMAIN = 'http://178.128.109.85:8080/api/v1/';
 const String LOGIN_ENDPOINT = DOMAIN + 'login';
 const String CHANGE_PASS = DOMAIN + "account/changePassword";
 const String COURSE_ENDPOINT = DOMAIN + 'courses';
@@ -11,3 +11,5 @@ const String CART = DOMAIN + "cart";
 const String COURSE_REVIEWS_ENDPOINT = DOMAIN + 'reviews/course/';
 const String CONTENT_COURSE = DOMAIN + "courses/";
 const String COURSE_PAIS = DOMAIN + "listPurchasedCourses/";
+const String REGISTER_ENDPOINT = DOMAIN +'account/users/register';
+const String GET_DETAIL_USER = DOMAIN + 'account/detail/';

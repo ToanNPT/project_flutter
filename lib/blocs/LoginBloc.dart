@@ -25,7 +25,8 @@ class LoginBloc {
         await storageRepository.writeSecureData(Constants.ACCESS_TOKEN_KEY, authUser.token);
         await storageRepository.writeSecureData(Constants.USERNAME, authUser.username);
 
-        print("ACCESS TOKEN STORED: " + await storageRepository.readSecureData(Constants.ACCESS_TOKEN_KEY));
+        // print("ACCESS TOKEN STORED: " + await storageRepository.readSecureData(Constants.ACCESS_TOKEN_KEY));
+        // print("USERNAME: " + await storageRepository.readSecureData(Constants.USERNAME));
         return true;
       }
       return false;
